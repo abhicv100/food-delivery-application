@@ -35,10 +35,10 @@ public class MenuService {
 	
 	public MenuItemTO getMenu(int  menuId) {
 		Optional<MenuItemEntity> maybeMenuEntity = menuDao.findById(menuId);
-		if(maybeMenuEntity.isEmpty()) {
-			return new MenuItemTO();
+		if(maybeMenuEntity.isPresent()) {
+			return convertMenuEntityToMenuTO(maybeMenuEntity.get());
 		}
-        return convertMenuEntityToMenuTO(maybeMenuEntity.get());
+		return new MenuItemTO();
     }
 
     public MenuItemTO createMenu(MenuItemTO menuTO) {
@@ -108,31 +108,8 @@ public class MenuService {
     }
     
     private MenuItemTO convertMenuEntityToMenuTO(MenuItemEntity menuEntity) {
-
     	MenuItemTO menuTO = new MenuItemTO();
-		BeanUtils.copyProperties(menuEntity, menuTO);
-		
-		Optional<CuisineEntity> maybeCuisineTO = cuisineDao.findById(menuTO.getCuisineId());
-
-		if(maybeCuisineTO.isEmpty()) {
-			
-		}
-
-		Optional<MenuCategoryEntity> maybeMenuCategoryTO = menuCategoryDao.findById(menuTO.getCategoryId());
-				
-		if(maybeMenuCategoryTO.isEmpty()) {
-			
-		}
-		
-		MenuCategoryTO menuCategoryTO = new MenuCategoryTO();
-		BeanUtils.copyProperties(maybeMenuCategoryTO.get(), menuCategoryTO);
-		
-		CuisineTO cuisineTO = new CuisineTO();
-		BeanUtils.copyProperties(maybeCuisineTO.get(), cuisineTO);
-		
-		menuTO.setCategory(menuCategoryTO);
-		menuTO.setCuisine(cuisineTO);
-		
+		BeanUtils.copyProperties(menuEntity, menuTO);		
     	return menuTO;
     }
 }

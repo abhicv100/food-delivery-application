@@ -24,11 +24,6 @@ public class MenuController {
 	@Autowired
 	MenuService menuService;
 	
-    @GetMapping("/{menuId}")
-    public ResponseEntity<MenuItemTO> getMenu(@PathVariable int menuId) {
-        return ResponseEntity.ok(menuService.getMenu(menuId));
-    }
-
     @PostMapping
     public ResponseEntity<MenuItemTO> createMenu(@RequestBody MenuItemTO menuTO) {
         return ResponseEntity.ok(menuService.createMenu(menuTO));

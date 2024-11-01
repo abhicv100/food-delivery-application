@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.service.RestaurantService;
+import com.bits.pilani.restaurant_service.to.CuisineTO;
+import com.bits.pilani.restaurant_service.to.MenuCategoryTO;
 import com.bits.pilani.restaurant_service.to.MenuItemTO;
 import com.bits.pilani.restaurant_service.to.RestaurantTO;
 import com.bits.pilani.restaurant_service.to.SearchResultTO;
@@ -34,9 +36,9 @@ public class RestaurantController {
 	@Autowired
 	MenuService menuService;
 	
-    @GetMapping("/{restaurantId}")
-    public ResponseEntity<RestaurantTO> getRestaurant(@PathVariable int restaurantId) {
-        return ResponseEntity.ok(restaurantService.getRestaurant(restaurantId));
+    @GetMapping("/{ownerId}")
+    public ResponseEntity<List<RestaurantTO>> getRestaurant(@PathVariable int ownerId) {
+        return ResponseEntity.ok(restaurantService.getRestaurantByOwnerId(ownerId));
     }
 
     @PostMapping
@@ -56,8 +58,8 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RestaurantTO>> getAllResturants(@RequestParam Map<String, String> filter) {
-        return ResponseEntity.ok(restaurantService.getAllResturants(filter));
+    public ResponseEntity<List<RestaurantTO>> searchRestaurant(@RequestParam Map<String, String> filter) {
+        return ResponseEntity.ok(restaurantService.searchRestaurant(filter));
     }
 
     @GetMapping("/{restaurantId}/menu")
@@ -68,5 +70,15 @@ public class RestaurantController {
     @GetMapping("/menu")
     public ResponseEntity<List<SearchResultTO>> searchAllRestauarntMenu(@RequestParam Map<String, String> filter) {
         return ResponseEntity.ok(restaurantService.searchMenu(filter));
+    }
+    
+    @GetMapping("/cuisines")
+    public ResponseEntity<List<CuisineTO>> getCuisines() {
+        return ResponseEntity.ok(restaurantService.getCuisines());
+    }
+
+    @GetMapping("/menuCategories")
+    public ResponseEntity<List<MenuCategoryTO>> getMenuCategories() {
+        return ResponseEntity.ok(restaurantService.getMenuCategories());
     }
 }

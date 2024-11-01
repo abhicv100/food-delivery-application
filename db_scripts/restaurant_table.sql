@@ -19,22 +19,24 @@ CREATE TABLE public.restaurant (
     opening_hours text,
     closing_hours text,
     rating real,
-    CONSTRAINT restaurant_id_pk PRIMARY KEY (id)
+    owner_id integer,
+    CONSTRAINT restaurant_id_pk PRIMARY KEY (id),
+    CONSTRAINT restaurant_owner_id_fk FOREIGN KEY (owner_id) REFERENCES public.user (id)
 );
 
 ALTER TABLE public.restaurant OWNER to postgres;  
 
-INSERT INTO public.restaurant (name, address, opening_hours, closing_hours, rating) VALUES
-    ('La Dolce Vita', '123 Main St, Cityville', '10:00', '22:00', 4.5),
-    ('Sushi Zen' , '456 Elm St, Cityville', '11:00', '23:00', 4.7),
-    ('Taco Loco', '789 Oak St, Cityville', '09:00', '21:00', 4.3),
-    ('The Curry House', '321 Maple St, Cityville', '12:00', '22:30', 4.6),
-    ('Burger Haven', '654 Pine St, Cityville', '08:00', '20:00', 4.2),
-    ('Pho Paradise', '987 Cedar St, Cityville', '10:00', '22:00', 4.4),
-    ('Bistro Paris', '159 Walnut St, Cityville', '07:00', '19:00', 4.8),
-    ('Pizzeria Italia', '753 Birch St, Cityville', '11:00', '23:00', 4.9),
-    ('Kebab King', '852 Chestnut St, Cityville', '10:00', '00:00', 4.5),
-    ('Green Garden', '951 Spruce St, Cityville', '08:30', '20:30', 4.3);
+INSERT INTO public.restaurant (name, address, opening_hours, closing_hours, rating, owner_id) VALUES
+    ('La Dolce Vita', '123 Main St, Cityville', '10:00', '22:00', 4.5, 2),
+    ('Sushi Zen' , '456 Elm St, Cityville', '11:00', '23:00', 4.7, 2),
+    ('Taco Loco', '789 Oak St, Cityville', '09:00', '21:00', 4.3, 2),
+    ('The Curry House', '321 Maple St, Cityville', '12:00', '22:30', 4.6, 2),
+    ('Burger Haven', '654 Pine St, Cityville', '08:00', '20:00', 4.2, 2),
+    ('Pho Paradise', '987 Cedar St, Cityville', '10:00', '22:00', 4.4, 2),
+    ('Bistro Paris', '159 Walnut St, Cityville', '07:00', '19:00', 4.8, 2),
+    ('Pizzeria Italia', '753 Birch St, Cityville', '11:00', '23:00', 4.9, 2),
+    ('Kebab King', '852 Chestnut St, Cityville', '10:00', '00:00', 4.5, 2),
+    ('Green Garden', '951 Spruce St, Cityville', '08:30', '20:30', 4.3, 2);
 
 -- MENU CATEGAORY TABLE
 

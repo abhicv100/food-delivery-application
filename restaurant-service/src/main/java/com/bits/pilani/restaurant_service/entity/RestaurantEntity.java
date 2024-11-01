@@ -33,4 +33,7 @@ public class RestaurantEntity {
 	
 	@Column
 	float rating;
+	
+	@Column
+	int ownerId;
 }
