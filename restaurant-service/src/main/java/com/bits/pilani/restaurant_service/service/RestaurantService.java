@@ -46,9 +46,16 @@ public class RestaurantService {
 				BeanUtils.copyProperties(restaurantEntity, restaurantTO);
 				return restaurantTO;
 			}).toList();
-		}
-		
+		}		
         return restaurants;
+    }
+	
+	public List<RestaurantTO> getAllRestaurants() {	
+		return restaurantDao.findAll().stream().map((restaurantEntity)-> {
+			RestaurantTO restaurantTO = new RestaurantTO();
+			BeanUtils.copyProperties(restaurantEntity, restaurantTO);
+			return restaurantTO;
+		}).toList();
     }
 
     public RestaurantTO createRestaurant(RestaurantTO restaurantTO) {
@@ -68,8 +75,8 @@ public class RestaurantService {
     }
 
     public List<RestaurantTO> searchRestaurant(Map<String, String> filter) {
-    	
-    	if(filter.containsKey("name")) filter.remove("name");
+    	 
+    	if(filter.size() == 0) return new ArrayList<RestaurantTO>();
     	
     	List<RestaurantEntity> restaurantEntities = restaurantDao.findAll();
     	    	
@@ -79,6 +86,13 @@ public class RestaurantService {
      		float rating = Float.valueOf(filter.get("rating"));
      		restaurantMatchers.add((restaurantEntity) -> {
      			return restaurantEntity.getRating() >= rating;
+     		});
+     	}
+     	
+     	if(filter.containsKey("restaurantName")) {
+     		String nameToFilterBy = filter.get("restaurantName");
+     		restaurantMatchers.add((restaurantEntity) -> {
+     			return restaurantEntity.getName().contains(nameToFilterBy);
      		});
      	}
      	
@@ -96,28 +110,7 @@ public class RestaurantService {
     	
         return result;
     }
-    
-    public List<SearchResultTO> searchMenu(Map<String, String> filter) {
-    	
-    	List<SearchResultTO> searchResults = new ArrayList<>();
-
-    	List<RestaurantEntity> restaurantEntities = restaurantDao.findAll();
-    	
-     	restaurantEntities.forEach((restaurantEntity) -> {
-     		List<MenuItemTO> filteredMenu = menuService.getMenuForRestaurant(restaurantEntity.getId(), filter);     		
-     		if(filteredMenu.size() > 0) {
-     			SearchResultTO searchResultTO = new SearchResultTO();
-        		RestaurantTO restaurantTO = new RestaurantTO();
-        		BeanUtils.copyProperties(restaurantEntity, restaurantTO);
-     			searchResultTO.setRestaurant(restaurantTO);
-     			searchResultTO.setMenu(filteredMenu);
-     			searchResults.add(searchResultTO);
-     		}
-    	});
-    	    	
-    	return searchResults;
-    }
-    
+        
     public List<CuisineTO> getCuisines() {
     	return cuisineDao.findAll().stream().map((cuisineEntity) -> {
     		CuisineTO cuisineTO = new CuisineTO();
@@ -132,6 +125,5 @@ public class RestaurantService {
     		BeanUtils.copyProperties(menuCategoryEntity, menuCategoryTO);
     		return menuCategoryTO;
     	}).toList();
-    }
-    
+    }    
 }

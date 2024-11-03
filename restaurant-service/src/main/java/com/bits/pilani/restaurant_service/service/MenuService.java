@@ -14,18 +14,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.bits.pilani.restaurant_service.dao.CuisineDao;
 import com.bits.pilani.restaurant_service.dao.MenuCategoryDao;
 import com.bits.pilani.restaurant_service.dao.MenuDao;
+import com.bits.pilani.restaurant_service.dao.RestaurantDao;
 import com.bits.pilani.restaurant_service.entity.MenuCategoryEntity;
 import com.bits.pilani.restaurant_service.entity.CuisineEntity;
 import com.bits.pilani.restaurant_service.entity.MenuItemEntity;
+import com.bits.pilani.restaurant_service.entity.RestaurantEntity;
 import com.bits.pilani.restaurant_service.to.CuisineTO;
 import com.bits.pilani.restaurant_service.to.MenuCategoryTO;
 import com.bits.pilani.restaurant_service.to.MenuItemTO;
+import com.bits.pilani.restaurant_service.to.RestaurantTO;
+import com.bits.pilani.restaurant_service.to.SearchResultTO;
 
 @Service
 public class MenuService {
 	
 	@Autowired
 	MenuDao menuDao;
+	
+	@Autowired
+	RestaurantDao restaurantDao;
 	
 	@Autowired
 	MenuCategoryDao menuCategoryDao;
@@ -57,16 +64,11 @@ public class MenuService {
     }
     
     public List<MenuItemTO> getMenuForRestaurant(int restaurantId) {
-    	List<MenuItemEntity> menuEntities = menuDao.findByRestaurantId(restaurantId);
-    	
-    	List<MenuItemTO> menuItems = new ArrayList<>();
-    	
-    	menuEntities.forEach((menuEntity) -> {
+    	List<MenuItemEntity> menuEntities = menuDao.findByRestaurantId(restaurantId);    	    	
+    	return menuEntities.stream().map((menuEntity) -> {
     		MenuItemTO menuTO = convertMenuEntityToMenuTO(menuEntity);
-    		menuItems.add(menuTO);
-    	});
-    	
-    	return menuItems;
+    		return menuTO;
+    	}).toList();
     }
     
     public List<MenuItemTO> getMenuForRestaurant(int restaurantId, Map<String, String> filter) {
@@ -91,8 +93,8 @@ public class MenuService {
 			});
 		}
 		
-		if(filter.containsKey("name")) {
-			String nameStr = filter.get("name");
+		if(filter.containsKey("itemName")) {
+			String nameStr = filter.get("itemName");
 			menuMatchers.add((menuTO) -> {
 				return menuTO.getName().contains(nameStr);
 			});
@@ -106,6 +108,28 @@ public class MenuService {
 
 		return filteredMenu;
     }
+    
+    public List<SearchResultTO> searchMenu(Map<String, String> filter) {
+    	
+    	List<SearchResultTO> searchResults = new ArrayList<>();
+
+    	List<RestaurantEntity> restaurantEntities = restaurantDao.findAll();
+    	
+     	restaurantEntities.forEach((restaurantEntity) -> {
+     		List<MenuItemTO> filteredMenu = this.getMenuForRestaurant(restaurantEntity.getId(), filter);     		
+     		if(filteredMenu.size() > 0) {
+     			SearchResultTO searchResultTO = new SearchResultTO();
+        		RestaurantTO restaurantTO = new RestaurantTO();
+        		BeanUtils.copyProperties(restaurantEntity, restaurantTO);
+     			searchResultTO.setRestaurant(restaurantTO);
+     			searchResultTO.setMenu(filteredMenu);
+     			searchResults.add(searchResultTO);
+     		}
+    	});
+    	    	
+    	return searchResults;
+    }
+
     
     private MenuItemTO convertMenuEntityToMenuTO(MenuItemEntity menuEntity) {
     	MenuItemTO menuTO = new MenuItemTO();

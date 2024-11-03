@@ -1,5 +1,8 @@
 package com.bits.pilani.restaurant_service.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,12 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.to.MenuItemTO;
 import com.bits.pilani.restaurant_service.to.RestaurantTO;
+import com.bits.pilani.restaurant_service.to.SearchResultTO;
 
 @RestController
 @ResponseBody
@@ -39,4 +44,10 @@ public class MenuController {
     	menuService.deleteMenu(menuId);
         return ResponseEntity.ok().build();
     }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<SearchResultTO>> searchMenu(@RequestParam Map<String, String> filter) {
+        return ResponseEntity.ok(menuService.searchMenu(filter));
+    }
+
 }

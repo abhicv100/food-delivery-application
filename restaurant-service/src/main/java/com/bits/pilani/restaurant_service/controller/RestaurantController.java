@@ -36,8 +36,13 @@ public class RestaurantController {
 	@Autowired
 	MenuService menuService;
 	
+    @GetMapping
+    public ResponseEntity<List<RestaurantTO>> getAllRestaurant() {
+        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    }
+	
     @GetMapping("/{ownerId}")
-    public ResponseEntity<List<RestaurantTO>> getRestaurant(@PathVariable int ownerId) {
+    public ResponseEntity<List<RestaurantTO>> getRestaurantByOwnerId(@PathVariable int ownerId) {
         return ResponseEntity.ok(restaurantService.getRestaurantByOwnerId(ownerId));
     }
 
@@ -57,7 +62,7 @@ public class RestaurantController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<List<RestaurantTO>> searchRestaurant(@RequestParam Map<String, String> filter) {
         return ResponseEntity.ok(restaurantService.searchRestaurant(filter));
     }
@@ -66,12 +71,7 @@ public class RestaurantController {
     public ResponseEntity<List<MenuItemTO>> getRestaurantMenu(@PathVariable int restaurantId) {
         return ResponseEntity.ok(menuService.getMenuForRestaurant(restaurantId));
     }
-    
-    @GetMapping("/menu")
-    public ResponseEntity<List<SearchResultTO>> searchAllRestauarntMenu(@RequestParam Map<String, String> filter) {
-        return ResponseEntity.ok(restaurantService.searchMenu(filter));
-    }
-    
+        
     @GetMapping("/cuisines")
     public ResponseEntity<List<CuisineTO>> getCuisines() {
         return ResponseEntity.ok(restaurantService.getCuisines());
