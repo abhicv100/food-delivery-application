@@ -20,6 +20,8 @@ import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.to.MenuItemTO;
 import com.bits.pilani.restaurant_service.to.RestaurantTO;
 import com.bits.pilani.restaurant_service.to.SearchResultTO;
+import com.bits.pilani.to.ResponseTO;
+import com.bits.pilani.to.SuccessResponseTO;
 
 @RestController
 @ResponseBody
@@ -46,8 +48,9 @@ public class MenuController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<List<SearchResultTO>> searchMenu(@RequestParam Map<String, String> filter) {
-        return ResponseEntity.ok(menuService.searchMenu(filter));
+    public ResponseEntity<ResponseTO> searchMenu(@RequestParam Map<String, String> filter) {
+    	List<SearchResultTO> searchResults = menuService.searchMenu(filter); 
+    	return SuccessResponseTO.create(searchResults);
     }
 
 }

@@ -1,8 +1,5 @@
 package com.bits.pilani.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,25 +9,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.bits.pilani.to.ErrorResponseTO;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
-	ResponseEntity<Object> handleException(Exception exception)  {
-		System.out.println(exception.getCause());
-		return ResponseEntity.internalServerError().body(exception.getMessage());
+	ResponseEntity<Object> handleException(Exception exception)  {		
+		ErrorResponseTO errorResponse = new ErrorResponseTO();
+		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.name());			
+		errorResponse.setMessage(exception.getCause().toString());
+		return ResponseEntity.internalServerError().body(errorResponse);
 	}
 	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
 			HttpStatusCode statusCode, WebRequest request) {
 		
-		Map<String, Object> errorResponse = new HashMap<>();
+		ErrorResponseTO errorResponse = new ErrorResponseTO();
+		
 		if(statusCode instanceof HttpStatus httpStatus) {
-			errorResponse.put("status", httpStatus.value());
-			errorResponse.put("error", httpStatus.name());			
+			errorResponse.setStatus(httpStatus.value());
+			errorResponse.setError(httpStatus.name());			
 		}
-		errorResponse.put("message", ex.getMessage());
+		errorResponse.setMessage(ex.getCause().toString());
 
 		return ResponseEntity.status(statusCode).headers(headers).body(errorResponse);
 	}

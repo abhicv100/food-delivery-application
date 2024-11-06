@@ -49,6 +49,7 @@ public class MenuService {
     }
 
     public MenuItemTO createMenu(MenuItemTO menuTO) {
+    	menuTO.setId(0);
     	MenuItemEntity menuEntity = new MenuItemEntity();
     	BeanUtils.copyProperties(menuTO, menuEntity);
     	menuEntity = menuDao.save(menuEntity);
@@ -112,7 +113,9 @@ public class MenuService {
     public List<SearchResultTO> searchMenu(Map<String, String> filter) {
     	
     	List<SearchResultTO> searchResults = new ArrayList<>();
-
+    	
+    	if(filter.size() == 0) return searchResults;
+    	
     	List<RestaurantEntity> restaurantEntities = restaurantDao.findAll();
     	
      	restaurantEntities.forEach((restaurantEntity) -> {

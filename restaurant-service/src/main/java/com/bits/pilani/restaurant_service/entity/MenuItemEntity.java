@@ -17,7 +17,7 @@ public class MenuItemEntity {
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+	Integer id;
 	
 	@Column
 	int restaurantId;
