@@ -1,4 +1,4 @@
-package com.bits.pilani.controller;
+package com.bits.pilani.delivery_service.controller;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bits.pilani.service.DeliveryService;
-import com.bits.pilani.to.DeliveryTO;
+import com.bits.pilani.delivery_service.service.DeliveryService;
+import com.bits.pilani.delivery_service.to.DeliveryTO;
 
 @RestController
 @ResponseBody
@@ -30,5 +30,4 @@ public class DeliveryServiceController {
     public ResponseEntity<List<DeliveryTO>> getAllDeliveryDetails() {
         return ResponseEntity.ok(deliveryService.getAllDeliveryDetails());
     }
-
 }

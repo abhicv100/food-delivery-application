@@ -1,14 +1,16 @@
-package com.bits.pilani.service;
+package com.bits.pilani.delivery_service.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import com.bits.pilani.dao.DeliveryDao;
-import com.bits.pilani.to.DeliveryTO;
+import com.bits.pilani.delivery_service.dao.DeliveryDao;
+import com.bits.pilani.delivery_service.to.DeliveryTO;
 
+@Service
 public class DeliveryService {
 	
 	@Autowired

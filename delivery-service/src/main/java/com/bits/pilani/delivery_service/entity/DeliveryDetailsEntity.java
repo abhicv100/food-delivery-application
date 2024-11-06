@@ -1,4 +1,4 @@
-package com.bits.pilani.entity;
+package com.bits.pilani.delivery_service.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
