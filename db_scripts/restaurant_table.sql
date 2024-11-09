@@ -1,6 +1,6 @@
 -- RESTAURANT TABLE
 
-DROP TABLE IF EXISTS public.restaurant;
+DROP TABLE IF EXISTS public.restaurant CASCADE;
 DROP SEQUENCE IF EXISTS public.restaurant_id_seq;
 
 CREATE SEQUENCE public.restaurant_id_seq
@@ -19,9 +19,9 @@ CREATE TABLE public.restaurant (
     opening_hours text,
     closing_hours text,
     rating real,
-    owner_id integer,
+    owner_id integer NOT NULL,
     CONSTRAINT restaurant_id_pk PRIMARY KEY (id),
-    CONSTRAINT restaurant_owner_id_fk FOREIGN KEY (owner_id) REFERENCES public.user (id)
+    CONSTRAINT restaurant_owner_id_fk FOREIGN KEY (owner_id) REFERENCES public.user (id) ON DELETE CASCADE
 );
 
 ALTER TABLE public.restaurant OWNER to postgres;  
@@ -183,6 +183,7 @@ CREATE TABLE public.menu_item (
     preparation_time integer,
     pure_veg boolean,
     CONSTRAINT menu_item_pkey PRIMARY KEY (id),
+    CONSTRAINT menu_item_restaurant_id_fk FOREIGN KEY (restaurant_id) REFERENCES public.restaurant (id) ON DELETE CASCADE,
     CONSTRAINT menu_item_category_id_fk FOREIGN KEY (category_id) REFERENCES public.menu_category (id),
     CONSTRAINT menu_item_cuisine_id_fk FOREIGN KEY (cuisine_id) REFERENCES public.cuisine (id)
 );

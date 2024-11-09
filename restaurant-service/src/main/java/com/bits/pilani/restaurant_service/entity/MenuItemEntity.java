@@ -20,13 +20,13 @@ public class MenuItemEntity {
 	Integer id;
 	
 	@Column
-	int restaurantId;
+	Integer restaurantId;
 	
 	@Column
-	int categoryId;
+	Integer categoryId;
 	
 	@Column
-	int cuisineId;
+	Integer cuisineId;
 	
 	@Column
 	String name;
@@ -41,12 +41,11 @@ public class MenuItemEntity {
 	boolean available;
 	
 	@Column
-	float rating;
+	Float rating = 0.0f;
 	
 	@Column
 	int preparationTime;
 	
 	@Column
 	boolean pureVeg;
-
 }

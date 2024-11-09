@@ -1,17 +1,7 @@
 package com.bits.pilani.restaurant_service.controller;
 
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import static com.bits.pilani.exception.CustomException.handleException;
 
-import com.bits.pilani.restaurant_service.service.MenuService;
-import com.bits.pilani.restaurant_service.service.RestaurantService;
-import com.bits.pilani.restaurant_service.to.CuisineTO;
-import com.bits.pilani.restaurant_service.to.MenuCategoryTO;
-import com.bits.pilani.restaurant_service.to.MenuItemTO;
-import com.bits.pilani.restaurant_service.to.RestaurantTO;
-import com.bits.pilani.restaurant_service.to.SearchResultTO;
-
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +9,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bits.pilani.exception.CustomException;
+import com.bits.pilani.restaurant_service.service.MenuService;
+import com.bits.pilani.restaurant_service.service.RestaurantService;
+import com.bits.pilani.restaurant_service.to.RestaurantTO;
+import com.bits.pilani.to.ResponseTO;
+import com.bits.pilani.to.SuccessResponseTO;
 
 @RestController
 @ResponseBody
@@ -35,50 +34,102 @@ public class RestaurantController {
 	
 	@Autowired
 	MenuService menuService;
-	
+		
     @GetMapping
-    public ResponseEntity<List<RestaurantTO>> getAllRestaurant() {
-        return ResponseEntity.ok(restaurantService.getAllRestaurants());
+    public ResponseEntity<ResponseTO> getAllRestaurant() {    	
+    	try {
+    		var restaurants = restaurantService.getAllRestaurants();
+    		return SuccessResponseTO.create(restaurants);
+    	} catch(CustomException customException) {
+    		return handleException(customException);
+    	}    	
     }
-	
+    
     @GetMapping("/{ownerId}")
-    public ResponseEntity<List<RestaurantTO>> getRestaurantByOwnerId(@PathVariable int ownerId) {
-        return ResponseEntity.ok(restaurantService.getRestaurantByOwnerId(ownerId));
+    public ResponseEntity<ResponseTO> getRestaurantByOwnerId(@PathVariable int ownerId) { 
+		// NOTE: owner id will be checked by the authorization flow
+    	try {
+    		var restaurants = restaurantService.getRestaurantByOwnerId(ownerId);
+    		return SuccessResponseTO.create(restaurants);
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 
     @PostMapping
-    public ResponseEntity<RestaurantTO> createRestaurant(@RequestBody RestaurantTO restaurantTO) {
-        return ResponseEntity.ok(restaurantService.createRestaurant(restaurantTO));
+    public ResponseEntity<ResponseTO> createRestaurant(@RequestBody RestaurantTO restaurantTO) {
+		try {
+			restaurantService.validateRestaurantTO(restaurantTO);
+			restaurantTO.setId(null);
+			var restaurant = restaurantService.createRestaurant(restaurantTO);
+			return SuccessResponseTO.create(restaurant);
+		} catch(CustomException e) {
+			return handleException(e);
+		}
     }
 
-    @PutMapping
-    public ResponseEntity<RestaurantTO> updateRestaurant(@RequestBody RestaurantTO restaurantTO) {
-        return ResponseEntity.ok(restaurantService.updateRestaurant(restaurantTO));
+    @PutMapping("/{restaurantId}")
+    public ResponseEntity<ResponseTO> updateRestaurant(@RequestBody RestaurantTO restaurantTO, @PathVariable int restaurantId) {
+    	try {    		
+			restaurantService.validateRestaurantTO(restaurantTO);
+    		restaurantService.checkIfRestaurantIdExist(restaurantId);
+    		restaurantTO.setId(restaurantId);
+    		var updatedRestaurant = restaurantService.updateRestaurant(restaurantTO);
+    		return SuccessResponseTO.create(updatedRestaurant);
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 
     @DeleteMapping("/{restaurantId}")
-    public ResponseEntity<RestaurantTO> deleteRestaurant(@PathVariable int restaurantId) {
-    	restaurantService.deleteRestaurant(restaurantId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ResponseTO> deleteRestaurant(@PathVariable int restaurantId) {
+    	try {
+    		restaurantService.checkIfRestaurantIdExist(restaurantId);
+    		restaurantService.deleteRestaurant(restaurantId);
+    		return SuccessResponseTO.create(restaurantId);    		
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<RestaurantTO>> searchRestaurant(@RequestParam Map<String, String> filter) {
-        return ResponseEntity.ok(restaurantService.searchRestaurant(filter));
+    public ResponseEntity<ResponseTO> searchRestaurant(@RequestParam Map<String, String> filter) {    	
+    	try {
+    		var restaurants = restaurantService.searchRestaurant(filter);
+    		return SuccessResponseTO.create(restaurants);    		
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 
     @GetMapping("/{restaurantId}/menu")
-    public ResponseEntity<List<MenuItemTO>> getRestaurantMenu(@PathVariable int restaurantId) {
-        return ResponseEntity.ok(menuService.getMenuForRestaurant(restaurantId));
+    public ResponseEntity<ResponseTO> getRestaurantMenu(@PathVariable int restaurantId) {
+    	try {
+    		restaurantService.checkIfRestaurantIdExist(restaurantId);
+    		var menuItems = menuService.getMenuForRestaurant(restaurantId);
+    		return SuccessResponseTO.create(menuItems);
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}    	
     }
         
     @GetMapping("/cuisines")
-    public ResponseEntity<List<CuisineTO>> getCuisines() {
-        return ResponseEntity.ok(restaurantService.getCuisines());
+    public ResponseEntity<ResponseTO> getCuisines() {
+    	try {
+    		var cuisines = restaurantService.getCuisines();
+    		return SuccessResponseTO.create(cuisines);    		
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 
     @GetMapping("/menuCategories")
-    public ResponseEntity<List<MenuCategoryTO>> getMenuCategories() {
-        return ResponseEntity.ok(restaurantService.getMenuCategories());
+    public ResponseEntity<ResponseTO> getMenuCategories() {
+    	try {
+    		var menuCategories = restaurantService.getMenuCategories();
+    		return SuccessResponseTO.create(menuCategories);    		
+    	} catch(CustomException e) {
+    		return handleException(e);
+    	}
     }
 }

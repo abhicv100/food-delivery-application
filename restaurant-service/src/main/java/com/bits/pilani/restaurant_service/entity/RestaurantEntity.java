@@ -17,12 +17,12 @@ public class RestaurantEntity {
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int id;
+	Integer id;
 	
-	@Column(nullable = false)
+	@Column
 	String name;
 	
-	@Column(nullable = false)
+	@Column
 	String address;
 	
 	@Column
@@ -32,8 +32,8 @@ public class RestaurantEntity {
 	String closingHours;
 	
 	@Column
-	float rating;
+	Float rating = 0.0f;
 	
 	@Column
-	int ownerId;
+	Integer ownerId;
 }
