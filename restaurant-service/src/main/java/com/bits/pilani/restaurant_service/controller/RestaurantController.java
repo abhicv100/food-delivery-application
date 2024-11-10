@@ -5,6 +5,7 @@ import static com.bits.pilani.exception.CustomException.handleException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,7 +63,7 @@ public class RestaurantController {
 			restaurantService.validateRestaurantTO(restaurantTO);
 			restaurantTO.setId(null);
 			var restaurant = restaurantService.createRestaurant(restaurantTO);
-			return SuccessResponseTO.create(restaurant);
+			return SuccessResponseTO.create(restaurant, HttpStatus.CREATED);
 		} catch(CustomException e) {
 			return handleException(e);
 		}
