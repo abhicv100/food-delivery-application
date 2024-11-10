@@ -1,8 +1,9 @@
 package com.bits.pilani.user_service.controller;
 
-import java.util.List;
+import static com.bits.pilani.exception.CustomException.handleException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bits.pilani.exception.CustomException;
+import com.bits.pilani.to.ResponseTO;
+import com.bits.pilani.to.SuccessResponseTO;
 import com.bits.pilani.user_service.service.UserService;
 import com.bits.pilani.user_service.to.UserTO;
-import com.bits.pilani.user_service.to.VehicleTypeTO;
-import com.bits.pilani.user_service.to.RoleTO;
 
 @RestController
 @ResponseBody
@@ -28,40 +30,70 @@ public class UserController {
 	UserService userService;
 	
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserTO> getUser(@PathVariable int userId) {
+	public ResponseEntity<ResponseTO> getUser(@PathVariable int userId) {
 		// TODO: take user id from the auth token
-		return ResponseEntity.ok(userService.getUser(userId));
+		try {
+			userService.checkIfUserIdExist(userId);
+			var user = userService.getUser(userId);
+			return SuccessResponseTO.create(user);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
 	}
 	
 	@PostMapping
-	public ResponseEntity<UserTO> createUser(@RequestBody UserTO userTO) {
-		//TODO: validate user data
-		userTO.setId(null);
-		return ResponseEntity.ok(userService.createUser(userTO));
+	public ResponseEntity<ResponseTO> createUser(@RequestBody UserTO userTO) {
+		try {
+			userService.validateUserTO(userTO);
+			userTO.setId(null);
+			var createdUser = userService.createUser(userTO);
+			return SuccessResponseTO.create(createdUser, HttpStatus.CREATED);			
+		} catch (CustomException e) {
+			return handleException(e);
+		}
 	}
 	
-	@PutMapping
-	public ResponseEntity<UserTO> updateUser(@RequestBody UserTO userTO) {
-		// TODO: take user id from the auth token 
-		// verify the existance of the user id
-		return ResponseEntity.ok(userService.updateUser(userTO));
+	@PutMapping("/{userId}")
+	public ResponseEntity<ResponseTO> updateUser(@RequestBody UserTO userTO, @PathVariable int userId) {
+		try {
+			userService.checkIfUserIdExist(userId);
+			userService.validateUserTO(userTO);
+			userTO.setId(userId);
+			var updatedUser = userService.updateUser(userTO);
+			return SuccessResponseTO.create(updatedUser);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
 	}
-		
+			
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<UserTO> deleteUser(@PathVariable int userId) {
-		// TODO: take user id from the auth token
-
-		userService.deleteUser(userId);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<ResponseTO> deleteUser(@PathVariable int userId) {
+		try {
+			userService.checkIfUserIdExist(userId);
+			userService.deleteUser(userId);			
+			return SuccessResponseTO.create(userId);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
 	}
 	
 	@GetMapping("/roles")
-	public List<RoleTO> getRoles() {
-		return userService.getRoles();
+	public ResponseEntity<ResponseTO> getRoles() {
+		try {
+			var roles = userService.getRoles();
+			return SuccessResponseTO.create(roles);			
+		}catch(CustomException e) {
+			return handleException(e);
+		}
 	}
 	
 	@GetMapping("/vehicleTypes")
-	public List<VehicleTypeTO> getVehicleTypes() {
-		return userService.getVehicleTypes();
+	public ResponseEntity<ResponseTO> getVehicleTypes() {
+		try {
+			var vehicles = userService.getVehicleTypes();
+			return SuccessResponseTO.create(vehicles);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.bits.pilani.to;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import lombok.Getter;
@@ -18,5 +19,10 @@ public class SuccessResponseTO<T> implements ResponseTO {
 	public static <T> ResponseEntity<ResponseTO> create(T data) {
 		SuccessResponseTO<T> successResponseTO = new SuccessResponseTO<T>(data);
 		return ResponseEntity.ok(successResponseTO);
+	}
+	
+	public static <T> ResponseEntity<ResponseTO> create(T data, HttpStatus httpStatus) {
+		SuccessResponseTO<T> successResponseTO = new SuccessResponseTO<T>(data);
+		return ResponseEntity.status(httpStatus).body(successResponseTO);
 	}
 }

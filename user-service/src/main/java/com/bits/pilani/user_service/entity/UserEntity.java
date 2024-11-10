@@ -19,13 +19,13 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer id;
 	
-	@Column(nullable = false)
+	@Column
 	String username;
 	
-	@Column(nullable = false)
+	@Column
 	String password;
 	
-	@Column(nullable = false)
+	@Column
 	String fullName;
 	
 	@Column
@@ -40,6 +40,6 @@ public class UserEntity {
 	@Column
 	Integer vehicleTypeId;
 	
-	@Column(nullable = false)
+	@Column
 	Integer roleId;
 }
