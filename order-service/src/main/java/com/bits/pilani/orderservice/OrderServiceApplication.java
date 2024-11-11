@@ -1,4 +1,4 @@
-package com.bits.pilani.order_service;
+package com.bits.pilani.orderservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
