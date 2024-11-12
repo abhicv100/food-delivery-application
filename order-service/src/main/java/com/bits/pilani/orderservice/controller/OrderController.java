@@ -57,7 +57,7 @@ public class OrderController {
 
     @PatchMapping("/{orderId}")
     public Order updateOrder(@PathVariable int orderId, 
-                                @RequestBody OrderStatus orderStatus) throws Exception
+                                @RequestParam OrderStatus orderStatus) throws Exception
     {
         // if(orderService.validate(orderRequest, orderId))
         // {
@@ -65,10 +65,12 @@ public class OrderController {
         // }
 
         Order order = orderRepo.findByOrderId(orderId);
-        orderService.validateStatus(order.getOrderStatus(), orderStatus);
-        order.setOrderStatus(orderStatus);
+        if(orderService.validateStatus(order.getOrderStatus(), orderStatus))
+        {
+            order.setOrderStatus(orderStatus);
+            return orderRepo.save(order);
+        }
 
-        orderRepo.save(order);
         //TODO: Add better exceptions
         throw new Exception();
     }
