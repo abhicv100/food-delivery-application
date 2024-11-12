@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,5 +53,23 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public Order getOrder(@PathVariable int orderId){
         return orderRepo.findByOrderId(orderId);
+    }
+
+    @PatchMapping("/{orderId}")
+    public Order updateOrder(@PathVariable int orderId, 
+                                @RequestBody OrderStatus orderStatus,) throws Exception
+    {
+        // if(orderService.validate(orderRequest, orderId))
+        // {
+            
+        // }
+
+        Order order = orderRepo.findByOrderId(orderId);
+        orderService.validateStatus(order.getOrderStatus(), orderStatus);
+        order.setOrderStatus(orderStatus);
+
+        orderRepo.save(order);
+        //TODO: Add better exceptions
+        throw new Exception();
     }
 }
