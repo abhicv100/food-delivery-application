@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bits.pilani.exception.CustomException;
+import com.bits.pilani.security.Authorize;
 import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 import com.bits.pilani.user_service.service.UserService;
@@ -29,6 +30,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
+	@Authorize
 	@GetMapping("/{userId}")
 	public ResponseEntity<ResponseTO> getUser(@PathVariable int userId) {
 		// TODO: take user id from the auth token
@@ -40,7 +42,8 @@ public class UserController {
 			return handleException(e);
 		}
 	}
-	
+
+	@Authorize
 	@PostMapping
 	public ResponseEntity<ResponseTO> createUser(@RequestBody UserTO userTO) {
 		try {
@@ -52,7 +55,8 @@ public class UserController {
 			return handleException(e);
 		}
 	}
-	
+
+	@Authorize
 	@PutMapping("/{userId}")
 	public ResponseEntity<ResponseTO> updateUser(@RequestBody UserTO userTO, @PathVariable int userId) {
 		try {
@@ -65,7 +69,8 @@ public class UserController {
 			return handleException(e);
 		}
 	}
-			
+
+	@Authorize
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<ResponseTO> deleteUser(@PathVariable int userId) {
 		try {
@@ -77,6 +82,7 @@ public class UserController {
 		}
 	}
 	
+	@Authorize
 	@GetMapping("/roles")
 	public ResponseEntity<ResponseTO> getRoles() {
 		try {
@@ -87,6 +93,7 @@ public class UserController {
 		}
 	}
 	
+	@Authorize
 	@GetMapping("/vehicleTypes")
 	public ResponseEntity<ResponseTO> getVehicleTypes() {
 		try {

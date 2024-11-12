@@ -6,10 +6,12 @@ import java.util.Objects;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bits.pilani.exception.CustomException;
+import com.bits.pilani.user_service.dao.RoleDao;
 import com.bits.pilani.user_service.dao.UserDao;
 import com.bits.pilani.user_service.to.UsernamePasswordTO;
 
@@ -20,6 +22,9 @@ public class AuthService {
 		
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	RoleDao roleDao;
 	
 	@Autowired
 	SecretKey secretKey;
@@ -37,15 +42,25 @@ public class AuthService {
 			throw new CustomException(HttpStatus.UNAUTHORIZED, "Password is invalid");			
 		}
 		
-		String token = Jwts.builder()
-                .subject(usernamePasswordTO.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .claim("userId", userEntity.getId())
-                .claim("roleId", userEntity.getRoleId())
-                .signWith(secretKey)
-                .compact();
-
-        return token;
+		try {
+			var mayBeRole = roleDao.findById(userEntity.getRoleId());
+			
+			if(mayBeRole.isPresent()) {
+				String token = Jwts.builder()
+						.subject(usernamePasswordTO.getUsername())
+						.issuedAt(new Date(System.currentTimeMillis()))
+						.claim("userId", userEntity.getId())
+						.claim("role", mayBeRole.get().getName())
+						.signWith(secretKey)
+						.compact();
+				return token;			
+			} else {
+				throw CustomException.INTERNAL_SERVER_ERRROR;
+			}			
+		} catch(DataAccessException e) {
+			throw CustomException.INTERNAL_SERVER_ERRROR;			
+		}
+		
 	}
 	
 	public void validateUsernamePasswordTO(UsernamePasswordTO usernamePasswordTO) throws CustomException {		
