@@ -57,7 +57,7 @@ public class OrderController {
 
     @PatchMapping("/{orderId}")
     public Order updateOrder(@PathVariable int orderId, 
-                                @RequestBody OrderStatus orderStatus,) throws Exception
+                                @RequestBody OrderStatus orderStatus) throws Exception
     {
         // if(orderService.validate(orderRequest, orderId))
         // {
