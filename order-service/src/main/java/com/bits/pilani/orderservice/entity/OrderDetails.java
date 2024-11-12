@@ -23,7 +23,7 @@ public class OrderDetails {
     @Column(name="order_details_id")
     private Long orderDetailsId;
 
-    @Column(nullable = false, name="uder_id")
+    @Column(nullable = false, name="user_id")
     private Long userId;
 
     @Column(nullable = false, name="restaurant_id")

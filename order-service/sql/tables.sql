@@ -23,7 +23,7 @@ CREATE TABLE public."order" (
     restaurant_disc_id VARCHAR(255),
     restaurant_disc_amt FLOAT,
     final_amt FLOAT NOT NULL,
-    order_status public.order_status NOT NULL,
+    order_status VARCHAR NOT NULL,
     start_time TIMESTAMP NOT NULL DEFAULT NOW(),
     modified_time TIMESTAMP NOT NULL DEFAULT NOW(),
     end_time TIMESTAMP,

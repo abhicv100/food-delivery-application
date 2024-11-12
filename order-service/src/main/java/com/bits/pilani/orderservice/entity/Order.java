@@ -5,12 +5,16 @@ import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.bits.pilani.orderservice.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +28,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name="order", schema="public")
+@EntityListeners({AuditingEntityListener.class})
 public class Order {
     
     @Id
@@ -52,11 +57,11 @@ public class Order {
     @Column(nullable = false, name="final_amt")
     private Float finalAmt;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, name="order_status")
     private OrderStatus orderStatus;
 
     @Column(nullable = false, name="start_time")
-    @CreatedDate
     private LocalDateTime startTime;
 
     @Column(nullable = false, name="modified_time")
@@ -80,7 +85,4 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetails> orderDetails;
 
-    public Float getFinalAmt() {
-        return this.totalAmt - this.restaurantDiscAmt;
-    }
 }

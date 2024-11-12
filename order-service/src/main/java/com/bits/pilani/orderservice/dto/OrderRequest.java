@@ -23,16 +23,6 @@ public class OrderRequest {
 
     private Float restaurantDiscAmt;
 
-    private Float finalAmt;
-
-    private OrderStatus orderStatus;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime modifiedTime;
-
-    private LocalDateTime expectedTime;
-
     private String address;
     
     private int kilometers;
