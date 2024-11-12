@@ -23,6 +23,7 @@ import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.to.MenuItemTO;
 import com.bits.pilani.restaurant_service.to.SearchResultTO;
+import com.bits.pilani.security.Authorize;
 import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 
@@ -34,6 +35,7 @@ public class MenuController {
 	@Autowired
 	MenuService menuService;
 	
+	@Authorize(roles = {"restaurant-owner"})
     @PostMapping
     public ResponseEntity<ResponseTO> createMenu(@RequestBody MenuItemTO menuTO) {
     	try {
@@ -46,6 +48,7 @@ public class MenuController {
     	}
     }
 
+	@Authorize(roles = {"restaurant-owner"})
     @PutMapping("/{menuItemId}")
     public ResponseEntity<ResponseTO> updateMenu(@RequestBody MenuItemTO menuTO, @PathVariable int menuItemId) {
     	try {
@@ -59,6 +62,7 @@ public class MenuController {
     	}
     }
 
+	@Authorize(roles = {"restaurant-owner"})
     @DeleteMapping("/{menuItemId}")
     public ResponseEntity<ResponseTO> deleteMenu(@PathVariable int menuItemId) throws CustomException {
     	try {			
@@ -69,7 +73,8 @@ public class MenuController {
 			return handleException(e);
 		}
     }
-    
+	
+	@Authorize(roles = {"customer"})
     @GetMapping("/search")
     public ResponseEntity<ResponseTO> searchMenu(@RequestParam Map<String, String> filter) {
     	try {

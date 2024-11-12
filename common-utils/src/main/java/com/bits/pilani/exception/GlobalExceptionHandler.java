@@ -16,7 +16,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(Exception.class)
 	ResponseEntity<Object> handleException(Exception exception)  {		
-		System.out.println("Global exception handler: " + exception.getCause().getClass());
 		ErrorResponseTO errorResponse = new ErrorResponseTO();
 		errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.name());			
