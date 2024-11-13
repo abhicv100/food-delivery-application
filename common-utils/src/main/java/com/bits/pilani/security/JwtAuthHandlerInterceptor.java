@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthHandlerInterceptor implements HandlerInterceptor {
 	
 	ObjectMapper mapper = new ObjectMapper();
-	
+
 	private void sendBearerTokenNotFoundError(HttpServletResponse response) throws Exception {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -40,7 +40,7 @@ public class JwtAuthHandlerInterceptor implements HandlerInterceptor {
 		ErrorResponseTO errorResponse = new ErrorResponseTO();
 		errorResponse.setStatus(HttpStatus.FORBIDDEN.value());
 		errorResponse.setError("INVALID_ROLE_CLAIM");
-		errorResponse.setMessage("Role claim in  is invalid or missing.");				
+		errorResponse.setMessage("Role claim in is invalid or missing.");				
 		mapper.writeValue(response.getWriter(), errorResponse);						
 	}
 	
@@ -93,18 +93,24 @@ public class JwtAuthHandlerInterceptor implements HandlerInterceptor {
 						return false;
 					}
 					
-					String role = String.class.cast(claims.get("role"));
+					String roleName = String.class.cast(claims.get("role"));
 					
+					Role role = Role.valueOf(roleName);
+										
 					var isRoleAuthorized = Arrays.asList(authroize.roles()).contains(role);
-					
+
 					if(!isRoleAuthorized) {
 						sendAccessDeniedError(response);
 						return false;						
-					}
+					}						
+					
 					
 				} catch (JwtException e) {
 					sendInvalidTokenError(response);
 					return false;											
+				} catch(IllegalArgumentException e) {
+					sendInvalidRoleClaimError(response);
+					return false;
 				}
 			}
 		}
