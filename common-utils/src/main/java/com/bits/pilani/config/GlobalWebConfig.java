@@ -2,6 +2,7 @@ package com.bits.pilani.config;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,9 +18,12 @@ import io.jsonwebtoken.security.Keys;
 @EnableWebMvc
 public class GlobalWebConfig implements WebMvcConfigurer {
 	
+	@Autowired
+	JwtAuthHandlerInterceptor jwtAuthHandlerInterceptor;
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new JwtAuthHandlerInterceptor());
+		registry.addInterceptor(jwtAuthHandlerInterceptor);
 	}
 	
 	static final String secret = "gZcLm+oqbX2jqZTiSt/LmdFsDZItipAMM3PYRMc4kJs=";
