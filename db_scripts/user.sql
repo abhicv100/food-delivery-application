@@ -13,7 +13,7 @@ ALTER TABLE public.role OWNER to postgres;
 INSERT INTO public.role (id, name) VALUES 
     ('1', 'customer'),
     ('2', 'restaurant-owner'),
-    ('3', 'deilvery-personal'),
+    ('3', 'delivery-personal'),
     ('4', 'admin');
 
 -- ROLE TABLE
