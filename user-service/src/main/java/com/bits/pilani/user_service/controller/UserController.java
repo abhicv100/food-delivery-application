@@ -42,7 +42,6 @@ public class UserController {
 		}
 	}
 
-	@Authorize
 	@PostMapping
 	public ResponseEntity<ResponseTO> createUser(@RequestBody UserTO userTO) {
 		try {
@@ -84,12 +83,8 @@ public class UserController {
 	@Authorize
 	@GetMapping("/roles")
 	public ResponseEntity<ResponseTO> getRoles() {
-		try {
-			var roles = userService.getRoles();
-			return SuccessResponseTO.create(roles);			
-		}catch(CustomException e) {
-			return handleException(e);
-		}
+		var roles = userService.getRoles();
+		return SuccessResponseTO.create(roles);			
 	}
 	
 	@Authorize
