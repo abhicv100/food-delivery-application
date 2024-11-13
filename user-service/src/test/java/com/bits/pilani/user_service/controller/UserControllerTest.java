@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.bits.pilani.security.JwtAuthHandlerInterceptor;
+import com.bits.pilani.security.Role;
 import com.bits.pilani.user_service.service.UserService;
-import com.bits.pilani.user_service.to.RoleTO;
 
 @WebMvcTest(controllers = {UserController.class})	
 public class UserControllerTest {
@@ -37,7 +37,7 @@ public class UserControllerTest {
 	
 	@Test
 	void testGetRoles() throws Exception {		
-		when(userService.getRoles()).thenReturn(new ArrayList<RoleTO>());		
+		when(userService.getRoles()).thenReturn(new ArrayList<Role>());		
 		mockMvc.perform(MockMvcRequestBuilders.get("/user/roles"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}

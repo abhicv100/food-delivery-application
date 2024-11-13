@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bits.pilani.exception.CustomException;
-import com.bits.pilani.user_service.dao.RoleDao;
+import com.bits.pilani.security.Role;
 import com.bits.pilani.user_service.dao.UserDao;
 import com.bits.pilani.user_service.to.UsernamePasswordTO;
 
@@ -22,10 +22,7 @@ public class AuthService {
 		
 	@Autowired
 	UserDao userDao;
-	
-	@Autowired
-	RoleDao roleDao;
-	
+		
 	@Autowired
 	SecretKey secretKey;
 	
@@ -43,14 +40,14 @@ public class AuthService {
 		}
 		
 		try {
-			var mayBeRole = roleDao.findById(userEntity.getRoleId());
+			var mayBeRole = Role.findById(userEntity.getRoleId());
 			
 			if(mayBeRole.isPresent()) {
 				String token = Jwts.builder()
 						.subject(usernamePasswordTO.getUsername())
 						.issuedAt(new Date(System.currentTimeMillis()))
 						.claim("userId", userEntity.getId())
-						.claim("role", mayBeRole.get().getName())
+						.claim("role", mayBeRole.get().name())
 						.signWith(secretKey)
 						.compact();
 				return token;			
@@ -59,8 +56,7 @@ public class AuthService {
 			}			
 		} catch(DataAccessException e) {
 			throw CustomException.INTERNAL_SERVER_ERRROR;			
-		}
-		
+		}	
 	}
 	
 	public void validateUsernamePasswordTO(UsernamePasswordTO usernamePasswordTO) throws CustomException {		

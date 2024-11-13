@@ -1,22 +1,4 @@
--- ROLE TABLE
-
-DROP TABLE IF EXISTS public.role CASCADE;
-
-CREATE TABLE public.role (
-    id integer,
-    name text,
-    CONSTRAINT role_id_pk PRIMARY KEY (id)
-);
-
-ALTER TABLE public.role OWNER to postgres;  
-
-INSERT INTO public.role (id, name) VALUES 
-    ('1', 'customer'),
-    ('2', 'restaurant-owner'),
-    ('3', 'delivery-personal'),
-    ('4', 'admin');
-
--- ROLE TABLE
+-- VEHICLE TYPE
 
 DROP TABLE IF EXISTS public.vehicle_type CASCADE;
 
@@ -55,7 +37,6 @@ CREATE TABLE public.user (
     role_id integer,
     CONSTRAINT user_id_pk PRIMARY KEY (id),
     CONSTRAINT vehicle_type_id_fk FOREIGN KEY (vehicle_type_id) REFERENCES public.vehicle_type (id),
-    CONSTRAINT user_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (id)
 );
 
 ALTER TABLE public.user OWNER to postgres;  

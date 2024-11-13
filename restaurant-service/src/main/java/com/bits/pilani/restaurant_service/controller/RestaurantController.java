@@ -23,6 +23,7 @@ import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.service.RestaurantService;
 import com.bits.pilani.restaurant_service.to.RestaurantTO;
 import com.bits.pilani.security.Authorize;
+import com.bits.pilani.security.Role;
 import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 
@@ -48,7 +49,7 @@ public class RestaurantController {
     	}    	
     }
 	
-	@Authorize(roles = {"restaurant-owner"})
+	@Authorize(roles = {Role.RESTAURANT_OWNER})
     @GetMapping("/{ownerId}")
     public ResponseEntity<ResponseTO> getRestaurantByOwnerId(@PathVariable int ownerId) { 
     	try {
@@ -58,8 +59,8 @@ public class RestaurantController {
     		return handleException(e);
     	}
     }
-	
-	@Authorize(roles = {"restaurant-owner"})
+
+	@Authorize(roles = {Role.RESTAURANT_OWNER})
     @PostMapping
     public ResponseEntity<ResponseTO> createRestaurant(@RequestBody RestaurantTO restaurantTO) {
 		try {
@@ -72,7 +73,7 @@ public class RestaurantController {
 		}
     }
 
-	@Authorize(roles = {"restaurant-owner"})
+	@Authorize(roles = {Role.RESTAURANT_OWNER})
     @PutMapping("/{restaurantId}")
     public ResponseEntity<ResponseTO> updateRestaurant(@RequestBody RestaurantTO restaurantTO, @PathVariable int restaurantId) {
     	try {    		
@@ -86,7 +87,7 @@ public class RestaurantController {
     	}
     }
 	
-	@Authorize(roles = {"restaurant-owner"})
+	@Authorize(roles = {Role.RESTAURANT_OWNER})
     @DeleteMapping("/{restaurantId}")
     public ResponseEntity<ResponseTO> deleteRestaurant(@PathVariable int restaurantId) {
     	try {
@@ -98,7 +99,7 @@ public class RestaurantController {
     	}
     }
 	
-	@Authorize(roles = {"customer"})
+	@Authorize(roles = {Role.CUSTOMER})
     @GetMapping("/search")
     public ResponseEntity<ResponseTO> searchRestaurant(@RequestParam Map<String, String> filter) {    	
     	try {
@@ -109,7 +110,7 @@ public class RestaurantController {
     	}
     }
 
-	@Authorize(roles = {"customer", "restaurant-owner"})
+	@Authorize(roles = {Role.CUSTOMER, Role.RESTAURANT_OWNER})
     @GetMapping("/{restaurantId}/menu")
     public ResponseEntity<ResponseTO> getRestaurantMenu(@PathVariable int restaurantId) {
     	try {
