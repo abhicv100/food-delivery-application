@@ -33,7 +33,6 @@ public class UserController {
 	@Authorize
 	@GetMapping("/{userId}")
 	public ResponseEntity<ResponseTO> getUser(@PathVariable int userId) {
-		// TODO: take user id from the auth token
 		try {
 			userService.checkIfUserIdExist(userId);
 			var user = userService.getUser(userId);

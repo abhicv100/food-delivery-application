@@ -22,6 +22,7 @@ import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.restaurant_service.service.MenuService;
 import com.bits.pilani.restaurant_service.service.RestaurantService;
 import com.bits.pilani.restaurant_service.to.RestaurantTO;
+import com.bits.pilani.security.Authorize;
 import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 
@@ -35,7 +36,8 @@ public class RestaurantController {
 	
 	@Autowired
 	MenuService menuService;
-		
+	
+	@Authorize
     @GetMapping
     public ResponseEntity<ResponseTO> getAllRestaurant() {    	
     	try {
@@ -45,10 +47,10 @@ public class RestaurantController {
     		return handleException(customException);
     	}    	
     }
-    
+	
+	@Authorize(roles = {"restaurant-owner"})
     @GetMapping("/{ownerId}")
     public ResponseEntity<ResponseTO> getRestaurantByOwnerId(@PathVariable int ownerId) { 
-		// NOTE: owner id will be checked by the authorization flow
     	try {
     		var restaurants = restaurantService.getRestaurantByOwnerId(ownerId);
     		return SuccessResponseTO.create(restaurants);
@@ -56,7 +58,8 @@ public class RestaurantController {
     		return handleException(e);
     	}
     }
-
+	
+	@Authorize(roles = {"restaurant-owner"})
     @PostMapping
     public ResponseEntity<ResponseTO> createRestaurant(@RequestBody RestaurantTO restaurantTO) {
 		try {
@@ -69,6 +72,7 @@ public class RestaurantController {
 		}
     }
 
+	@Authorize(roles = {"restaurant-owner"})
     @PutMapping("/{restaurantId}")
     public ResponseEntity<ResponseTO> updateRestaurant(@RequestBody RestaurantTO restaurantTO, @PathVariable int restaurantId) {
     	try {    		
@@ -81,7 +85,8 @@ public class RestaurantController {
     		return handleException(e);
     	}
     }
-
+	
+	@Authorize(roles = {"restaurant-owner"})
     @DeleteMapping("/{restaurantId}")
     public ResponseEntity<ResponseTO> deleteRestaurant(@PathVariable int restaurantId) {
     	try {
@@ -92,7 +97,8 @@ public class RestaurantController {
     		return handleException(e);
     	}
     }
-
+	
+	@Authorize(roles = {"customer"})
     @GetMapping("/search")
     public ResponseEntity<ResponseTO> searchRestaurant(@RequestParam Map<String, String> filter) {    	
     	try {
@@ -103,6 +109,7 @@ public class RestaurantController {
     	}
     }
 
+	@Authorize(roles = {"customer", "restaurant-owner"})
     @GetMapping("/{restaurantId}/menu")
     public ResponseEntity<ResponseTO> getRestaurantMenu(@PathVariable int restaurantId) {
     	try {
@@ -113,7 +120,8 @@ public class RestaurantController {
     		return handleException(e);
     	}    	
     }
-        
+    
+    @Authorize
     @GetMapping("/cuisines")
     public ResponseEntity<ResponseTO> getCuisines() {
     	try {
@@ -124,6 +132,7 @@ public class RestaurantController {
     	}
     }
 
+    @Authorize
     @GetMapping("/menuCategories")
     public ResponseEntity<ResponseTO> getMenuCategories() {
     	try {
