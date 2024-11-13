@@ -15,6 +15,7 @@ import com.bits.pilani.delivery_service.constant.DeliveryConstants;
 import com.bits.pilani.delivery_service.dao.DeliveryDao;
 import com.bits.pilani.delivery_service.entity.DeliveryDetailsEntity;
 import com.bits.pilani.delivery_service.to.DeliveryTO;
+import com.bits.pilani.exception.CustomException;
 
 @Service
 public class DeliveryService {
@@ -22,7 +23,7 @@ public class DeliveryService {
 	@Autowired
 	DeliveryDao deliveryDao;
 
-	public DeliveryTO getDeliveryByOrderId(int orderId) throws Exception {
+	public DeliveryTO getDeliveryByOrderId(int orderId) throws CustomException {
 
 		DeliveryTO daoTO = new DeliveryTO();
 
@@ -37,30 +38,38 @@ public class DeliveryService {
 				daoTO.setOrder_id(deliveryDetail.get().getOrder_id());
 			}
 		} catch (NoSuchElementException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"Invalid request: " + DeliveryConstants.INVALID_CONFIG);
+			throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid request: " + DeliveryConstants.INVALID_CONFIG);
 		}
 
 		return daoTO;
 	}
 
-	public List<DeliveryTO> getAllDeliveryDetails() {
-		return deliveryDao.findAll().stream().map((deliveryEntity) -> {
-			DeliveryTO deliveryTO = new DeliveryTO();
-			BeanUtils.copyProperties(deliveryEntity, deliveryTO);
-			return deliveryTO;
-		}).toList();
+	public List<DeliveryTO> getAllDeliveryDetails() throws CustomException {
+		try {
+			return deliveryDao.findAll().stream().map((deliveryEntity) -> {
+				DeliveryTO deliveryTO = new DeliveryTO();
+				BeanUtils.copyProperties(deliveryEntity, deliveryTO);
+				return deliveryTO;
+			}).toList();
+		} catch (DataAccessException e) {
+			throw CustomException.INTERNAL_SERVER_ERRROR;
+
+		}
 	}
 
-	public DeliveryTO newDeliveryDetails(DeliveryTO deliveryTO) {
-		DeliveryDetailsEntity deliveryEntity = new DeliveryDetailsEntity();
-		BeanUtils.copyProperties(deliveryTO, deliveryEntity);
-		deliveryEntity = deliveryDao.save(deliveryEntity);
-		BeanUtils.copyProperties(deliveryEntity, deliveryTO);
+	public DeliveryTO newDeliveryDetails(DeliveryTO deliveryTO) throws CustomException {
+		try {
+			DeliveryDetailsEntity deliveryEntity = new DeliveryDetailsEntity();
+			BeanUtils.copyProperties(deliveryTO, deliveryEntity);
+			deliveryEntity = deliveryDao.save(deliveryEntity);
+			BeanUtils.copyProperties(deliveryEntity, deliveryTO);
+		} catch (IllegalArgumentException  e) {
+			throw CustomException.INTERNAL_SERVER_ERRROR;
+		}
 		return deliveryTO;
 	}
 
-	public DeliveryTO updateDeliveryByOrderId(DeliveryTO deliveryTO, int orderId) throws Exception {
+	public DeliveryTO updateDeliveryByOrderId(DeliveryTO deliveryTO, int orderId) throws CustomException {
 
 		try {
 			Optional<DeliveryDetailsEntity> deliveryDetail = deliveryDao.findById(orderId);
@@ -72,8 +81,7 @@ public class DeliveryService {
 			}
 
 		} catch (DataAccessException e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"Invalid request: " + DeliveryConstants.INVALID_CONFIG);
+			throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid request: " + DeliveryConstants.INVALID_CONFIG);
 		}
 		return deliveryTO;
 	}

@@ -33,6 +33,7 @@ import com.bits.pilani.delivery_service.dao.DeliveryDao;
 import com.bits.pilani.delivery_service.entity.DeliveryDetailsEntity;
 import com.bits.pilani.delivery_service.service.DeliveryService;
 import com.bits.pilani.delivery_service.to.DeliveryTO;
+import com.bits.pilani.exception.CustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ActiveProfiles("test")
@@ -76,16 +77,16 @@ public class DeliveryServiceTest {
         int orderId = 1;
 
         when(deliveryDao.findById(orderId)).thenThrow(new NoSuchElementException());
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
         	service.getDeliveryByOrderId(orderId);
         });
-        assertEquals("Invalid request: " + DeliveryConstants.INVALID_CONFIG, exception.getReason());
+        assertEquals("Invalid request: " + DeliveryConstants.INVALID_CONFIG, exception.getMessage());
         verify(service, times(1)).getDeliveryByOrderId(Mockito.anyInt());
     }
     
     @Test
 	@Order(3)
-    void testgetAllDeliveryDetails() {
+    void testgetAllDeliveryDetails() throws CustomException {
         int orderId = 1;
         DeliveryDetailsEntity mockEntity = new DeliveryDetailsEntity();
         mockEntity.setDelivered(true);
@@ -103,7 +104,7 @@ public class DeliveryServiceTest {
     
     @Test
   	@Order(4)
-      void testNewDeliveryDetails() {
+      void testNewDeliveryDetails() throws CustomException {
           int orderId = 1;
           DeliveryDetailsEntity mockEntity = new DeliveryDetailsEntity();
           mockEntity.setDelivered(true);
@@ -163,11 +164,58 @@ public class DeliveryServiceTest {
         mockDeliveryTO.setDelivery_message("Delivered Successfully"); 
 
         when(deliveryDao.findById(orderId)).thenThrow(new DataAccessException("Database error") {});
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+        CustomException exception = assertThrows(CustomException.class, () -> {
         	service.updateDeliveryByOrderId(mockDeliveryTO,orderId);
         });
-        assertEquals("Invalid request: " + DeliveryConstants.INVALID_CONFIG, exception.getReason());
+        assertEquals("Invalid request: " + DeliveryConstants.INVALID_CONFIG, exception.getMessage());
         verify(service, times(1)).updateDeliveryByOrderId(Mockito.any(),Mockito.anyInt());
+    }
+    
+    @Test
+	@Order(7)
+    void testExceptionGetAllDeliveryDetails() throws CustomException {
+        int orderId = 1;
+        DeliveryDetailsEntity mockEntity = new DeliveryDetailsEntity();
+        mockEntity.setDelivered(true);
+        mockEntity.setDelivery_accepted(true);
+        mockEntity.setDelivery_message("Delivered Successfully");
+        mockEntity.setDelivery_person_id(1001);
+        mockEntity.setOrder_id(orderId);
+            
+        when(deliveryDao.findAll()).thenThrow(new DataAccessException("Database error") {});
+        CustomException exception = assertThrows(CustomException.class, () -> {
+        	service.getAllDeliveryDetails();
+        });
+        
+        assertEquals(DeliveryConstants.INTERNAL_SERVER_ERROR, exception.getMessage());
+        verify(service, times(1)).getAllDeliveryDetails();
+    }
+    
+    @Test
+	@Order(7)
+    void testNew_DeliveryDetails() throws CustomException {
+        int orderId = 1;
+        DeliveryDetailsEntity mockEntity = new DeliveryDetailsEntity();
+        mockEntity.setDelivered(true);
+        mockEntity.setDelivery_accepted(true);
+        mockEntity.setDelivery_message("Delivered Successfully");
+        mockEntity.setDelivery_person_id(1001);
+        mockEntity.setOrder_id(orderId);
+        
+        DeliveryTO mockDeliveryTO = new DeliveryTO();
+        mockDeliveryTO.setOrder_id(orderId);
+        mockDeliveryTO.setDelivered(true);
+        mockDeliveryTO.setDelivery_accepted(true);
+        mockDeliveryTO.setDelivery_person_id(1001);
+        mockDeliveryTO.setDelivery_message("Delivered Successfully"); 
+            
+        when(deliveryDao.save(mockEntity)).thenThrow(new IllegalArgumentException ("Database error") {});
+        CustomException exception = assertThrows(CustomException.class, () -> {
+        	service.newDeliveryDetails(mockDeliveryTO);
+        });
+        
+        assertEquals(DeliveryConstants.INTERNAL_SERVER_ERROR, exception.getMessage());
+        verify(service, times(1)).newDeliveryDetails(Mockito.any());
     }
 
 }

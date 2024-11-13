@@ -1,5 +1,7 @@
 package com.bits.pilani.delivery_service.controller;
 
+import static com.bits.pilani.exception.CustomException.handleException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,32 +17,54 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bits.pilani.delivery_service.service.DeliveryService;
 import com.bits.pilani.delivery_service.to.DeliveryTO;
+import com.bits.pilani.exception.CustomException;
+import com.bits.pilani.security.Authorize;
+import com.bits.pilani.to.ResponseTO;
+import com.bits.pilani.to.SuccessResponseTO;
 
 @RestController
 @ResponseBody
 @RequestMapping("/delivery")
 public class DeliveryServiceController {
-	
+
 	@Autowired
 	DeliveryService deliveryService;
-	
-    @GetMapping("/{orderId}")
-    public ResponseEntity<DeliveryTO> getDeliveryDetailsByOrderId(@PathVariable int orderId) throws Exception {
-        return ResponseEntity.ok(deliveryService.getDeliveryByOrderId(orderId));
-    }
-    
-    @GetMapping
-    public ResponseEntity<List<DeliveryTO>> getAllDeliveryDetails() {
-        return ResponseEntity.ok(deliveryService.getAllDeliveryDetails());
-    }
-    
-    @PostMapping
-    public ResponseEntity<DeliveryTO> newDeliveryDetails(@RequestBody DeliveryTO deliveryTO) {
-        return ResponseEntity.ok(deliveryService.newDeliveryDetails(deliveryTO));
-    }
-    
-    @PutMapping("/{orderId}")
-    public ResponseEntity<DeliveryTO> updateDeliveryDetails(@PathVariable int orderId,@RequestBody DeliveryTO deliveryTO) throws Exception {
-        return ResponseEntity.ok(deliveryService.updateDeliveryByOrderId(deliveryTO, orderId));
-    }
+
+	@Authorize(roles = { "delivery-personal" })
+	@GetMapping("/{orderId}")
+	public ResponseEntity<ResponseTO> getDeliveryDetailsByOrderId(@PathVariable int orderId) throws CustomException {
+
+		try {
+			var user = deliveryService.getDeliveryByOrderId(orderId);
+			return SuccessResponseTO.create(user);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
+	}
+
+	@Authorize(roles = { "delivery-personal" })
+	@GetMapping
+	public ResponseEntity<ResponseTO> getAllDeliveryDetails() throws CustomException {
+		var user = deliveryService.getAllDeliveryDetails();
+		return SuccessResponseTO.create(user);
+	}
+
+	@Authorize(roles = { "delivery-personal" })
+	@PostMapping
+	public ResponseEntity<ResponseTO> newDeliveryDetails(@RequestBody DeliveryTO deliveryTO) throws CustomException {
+		var user = deliveryService.newDeliveryDetails(deliveryTO);
+		return SuccessResponseTO.create(user);
+	}
+
+	@Authorize(roles = { "delivery-personal" })
+	@PutMapping("/{orderId}")
+	public ResponseEntity<ResponseTO> updateDeliveryDetails(@PathVariable int orderId,
+			@RequestBody DeliveryTO deliveryTO) throws CustomException {
+		try {
+			var user = deliveryService.updateDeliveryByOrderId(deliveryTO, orderId);
+			return SuccessResponseTO.create(user);
+		} catch (CustomException e) {
+			return handleException(e);
+		}
+	}
 }
