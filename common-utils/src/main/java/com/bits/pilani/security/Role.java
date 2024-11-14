@@ -9,7 +9,7 @@ public enum Role {
 
 	CUSTOMER,
 	RESTAURANT_OWNER, 
-	DELIVERY_PERSONAL,
+	DELIVERY_PERSONNEL,
 	ADMIN;
 		
 	@JsonValue

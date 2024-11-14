@@ -15,5 +15,12 @@ public enum OrderStatus {
 
     REJECTED,
 
-    CANCELLED
+    CANCELLED;
+
+    public OrderStatus getNext() {
+        OrderStatus[] statuses = OrderStatus.values();
+        int currentIndex = this.ordinal();
+        int nextIndex = (currentIndex + 1) % statuses.length;
+        return statuses[nextIndex];
+    }
 }

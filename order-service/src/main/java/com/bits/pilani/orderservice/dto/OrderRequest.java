@@ -1,8 +1,6 @@
 package com.bits.pilani.orderservice.dto;
 
-import java.time.LocalDateTime;
-
-import com.bits.pilani.orderservice.enums.OrderStatus;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +13,7 @@ public class OrderRequest {
 
     private Long restaurantId;
 
-    private String items;
+    private List<MenuItem> items;
 
     private Float totalAmt;
 

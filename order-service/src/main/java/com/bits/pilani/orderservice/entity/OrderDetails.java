@@ -32,6 +32,9 @@ public class OrderDetails {
     @Column(nullable = false, name="item_id")
     private Long itemId;
 
+    @Column(nullable = false)
+    private int quantity;
+
     @Column(name="order_month")
     private Integer orderMonth;
 

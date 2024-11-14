@@ -4,10 +4,14 @@ import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.dto.OrderResponse;
 import com.bits.pilani.orderservice.entity.Order;
 import com.bits.pilani.orderservice.enums.OrderStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OrderConvertor {
+    
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static Order toOrder(OrderRequest orderRequest)
+    public static Order toOrder(OrderRequest orderRequest) throws JsonProcessingException
     {
         Order order = new Order();
         order.setUserId(orderRequest.getUserId());
@@ -29,11 +33,20 @@ public class OrderConvertor {
         OrderResponse orderResponse = new OrderResponse();
 
         orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setUserId(order.getUserId());
+        orderResponse.setRestaurantId(order.getRestaurantId());
+        orderResponse.setItems(order.getItems()); 
+        orderResponse.setTotalAmt(order.getTotalAmt());
+        orderResponse.setRestaurantDiscId(order.getRestaurantDiscId());
+        orderResponse.setRestaurantDiscAmt(order.getRestaurantDiscAmt());
+        orderResponse.setFinalAmt(order.getFinalAmt());
         orderResponse.setOrderStatus(order.getOrderStatus());
         orderResponse.setStartTime(order.getStartTime());
-        orderResponse.setExpectedTime(order.getExpectedTime());
         orderResponse.setModifiedTime(order.getModifiedTime());
         orderResponse.setEndTime(order.getEndTime());
+        orderResponse.setExpectedTime(order.getExpectedTime());
+        orderResponse.setAddress(order.getAddress());
+        orderResponse.setKilometers(order.getKilometers());
 
         return orderResponse;
     }

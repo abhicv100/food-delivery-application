@@ -129,7 +129,7 @@ public class UserService {
 			if(!Objects.nonNull(userTo.getAddress())) {
 				throw new CustomException(HttpStatus.BAD_REQUEST, "Address is missing. Please provide address.");
 			}
-		} else if(mayBeRole.get().equals(Role.DELIVERY_PERSONAL)) {
+		} else if(mayBeRole.get().equals(Role.DELIVERY_PERSONNEL)) {
 			if(!Objects.nonNull(userTo.getVehicleTypeId())) {
 				throw new CustomException(HttpStatus.BAD_REQUEST, "Vehicle type id is missing. Please provide vehicle type id");				
 			}

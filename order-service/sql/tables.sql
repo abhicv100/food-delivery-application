@@ -38,6 +38,7 @@ CREATE TABLE public.orderdetails (
     user_id BIGINT NOT NULL,
     restaurant_id BIGINT NOT NULL,
     item_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
     order_month INT,
     order_year INT,
     order_id BIGINT NOT NULL,

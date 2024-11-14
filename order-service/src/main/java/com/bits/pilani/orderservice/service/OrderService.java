@@ -1,6 +1,7 @@
 package com.bits.pilani.orderservice.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,38 +41,13 @@ public class OrderService {
         }
     }
 
-    public boolean validate(OrderRequest orderRequest, int orderId)
+    public boolean validate(OrderRequest orderRequest)
     {
-        Order order = orderRepo.findByOrderId(orderId);
 
-        return order.getUserId() == orderRequest.getUserId();        
+        return ongoingOrderExists(orderRequest);       
     }
 
-    public boolean validateStatus(OrderStatus previousStatus, OrderStatus newStatus)
-    {
-        if(newStatus.equals(OrderStatus.ACCEPTED) && previousStatus.equals(OrderStatus.PLACED))
-        {
-            return true;
-        }
-        if(newStatus.equals(OrderStatus.PREPARING) && previousStatus.equals(OrderStatus.ACCEPTED))
-        {
-            return true;
-        }           
-            
-        if(newStatus.equals(OrderStatus.READY_FOR_PICKUP) && previousStatus.equals(OrderStatus.PREPARING))
-        {
-            return true;
-        }   
-
-        if(newStatus.equals(OrderStatus.OUT_FOR_DELIVERY) && previousStatus.equals(OrderStatus.READY_FOR_PICKUP))
-        {
-            return true;
-        }
-
-        if(newStatus.equals(OrderStatus.DELIVERED) && previousStatus.equals(OrderStatus.OUT_FOR_DELIVERY))
-        {
-            return true;
-        }
+    public boolean validateStatus(OrderStatus previousStatus, OrderStatus newStatus){
         
         if(newStatus.equals(OrderStatus.REJECTED))
         {
@@ -83,7 +59,33 @@ public class OrderService {
             return true;
         }
 
+        if(previousStatus.getNext().equals(newStatus))
+        {
+            return true;
+        }
+
         return false;
         
+    }
+
+    private boolean ongoingOrderExists(OrderRequest orderRequest)
+    {
+        List<Order> orders = orderRepo.findByUserIdAndRestaurantId(orderRequest.getUserId(), orderRequest.getRestaurantId());
+
+        if(orders.isEmpty())
+        {
+            return true;
+        }
+
+        for (Order order : orders) {
+            if(!order.getOrderStatus().equals(OrderStatus.DELIVERED)
+            || !order.getOrderStatus().equals(OrderStatus.REJECTED)
+            || !order.getOrderStatus().equals(OrderStatus.CANCELLED))
+            {
+                return false;
+            }
+        }         
+
+        return true;
     }
 }

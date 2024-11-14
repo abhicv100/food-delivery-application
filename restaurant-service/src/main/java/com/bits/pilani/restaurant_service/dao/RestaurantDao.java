@@ -1,7 +1,6 @@
 package com.bits.pilani.restaurant_service.dao;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.repository.ListCrudRepository;
 
