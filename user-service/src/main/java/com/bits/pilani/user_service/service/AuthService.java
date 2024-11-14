@@ -19,53 +19,49 @@ import io.jsonwebtoken.Jwts;
 
 @Service
 public class AuthService {
-		
+
 	@Autowired
 	UserDao userDao;
-		
+
 	@Autowired
 	SecretKey secretKey;
-	
-	public String authenticateAndGetToken(UsernamePasswordTO usernamePasswordTO) throws CustomException {        		
-		
+
+	public String authenticateAndGetToken(UsernamePasswordTO usernamePasswordTO) throws CustomException {
+
 		var userEntity = userDao.findByUsername(usernamePasswordTO.getUsername());
-		
-		if(userEntity == null) {
+
+		if (userEntity == null) {
 			String errorMsg = String.format("Username = '%s' is invalid", usernamePasswordTO.getUsername());
 			throw new CustomException(HttpStatus.UNAUTHORIZED, errorMsg);
 		}
-		
-		if(!userEntity.getPassword().equals(usernamePasswordTO.getPassword())) {
-			throw new CustomException(HttpStatus.UNAUTHORIZED, "Password is invalid");			
-		}
-		
-		try {
-			var mayBeRole = Role.findById(userEntity.getRoleId());
-			
-			if(mayBeRole.isPresent()) {
-				String token = Jwts.builder()
-						.subject(usernamePasswordTO.getUsername())
-						.issuedAt(new Date(System.currentTimeMillis()))
-						.claim("userId", userEntity.getId())
-						.claim("role", mayBeRole.get().name())
-						.signWith(secretKey)
-						.compact();
-				return token;			
-			} else {
-				throw CustomException.INTERNAL_SERVER_ERRROR;
-			}			
-		} catch(DataAccessException e) {
-			throw CustomException.INTERNAL_SERVER_ERRROR;			
-		}	
-	}
-	
-	public void validateUsernamePasswordTO(UsernamePasswordTO usernamePasswordTO) throws CustomException {		
 
-		if(Objects.isNull(usernamePasswordTO.getUsername())) {
+		if (!userEntity.getPassword().equals(usernamePasswordTO.getPassword())) {
+			throw new CustomException(HttpStatus.UNAUTHORIZED, "Password is invalid");
+		}
+
+		var mayBeRole = Role.findById(userEntity.getRoleId());
+
+		if (mayBeRole.isPresent()) {
+			try {
+				String token = Jwts.builder().subject(usernamePasswordTO.getUsername())
+						.issuedAt(new Date(System.currentTimeMillis())).claim("userId", userEntity.getId())
+						.claim("role", mayBeRole.get().name()).signWith(secretKey).compact();
+				return token;
+			} catch (Exception e) {
+				throw CustomException.INTERNAL_SERVER_ERRROR;
+			}
+		} else {
+			throw CustomException.INTERNAL_SERVER_ERRROR;
+		}
+	}
+
+	public void validateUsernamePasswordTO(UsernamePasswordTO usernamePasswordTO) throws CustomException {
+
+		if (Objects.isNull(usernamePasswordTO.getUsername())) {
 			throw new CustomException(HttpStatus.BAD_REQUEST, "Username is missing. Please provide username.");
 		}
-		
-		if(Objects.isNull(usernamePasswordTO.getPassword())) {
+
+		if (Objects.isNull(usernamePasswordTO.getPassword())) {
 			throw new CustomException(HttpStatus.BAD_REQUEST, "Password is missing. Please provide password.");
 		}
 	}
