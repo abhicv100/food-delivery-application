@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bits.pilani.config.GlobalWebConfig;
 import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.dto.OrderResponse;
@@ -30,9 +28,6 @@ import com.bits.pilani.security.Role;
 import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 import com.bits.pilani.util.TokenUtil;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 
 @RestController
 @RequestMapping("/order")
