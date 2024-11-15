@@ -178,7 +178,7 @@ public class UserServiceTest {
 		userTO.setUsername("user");
 		userTO.setPassword("password");
 		userTO.setFullName("fullname");
-		userTO.setRoleId(Role.DELIVERY_PERSONAL.ordinal() + 1);		
+		userTO.setRoleId(Role.DELIVERY_PERSONNEL.ordinal() + 1);		
 		CustomException exception = assertThrows(CustomException.class, () -> {
         	userService.validateUserTO(userTO);
         });
@@ -192,7 +192,7 @@ public class UserServiceTest {
 		userTO.setUsername("user");
 		userTO.setPassword("password");
 		userTO.setFullName("fullname");
-		userTO.setRoleId(Role.DELIVERY_PERSONAL.ordinal() + 1);		
+		userTO.setRoleId(Role.DELIVERY_PERSONNEL.ordinal() + 1);		
 		userTO.setVehicleTypeId(-1);
 		CustomException exception = assertThrows(CustomException.class, () -> {
         	userService.validateUserTO(userTO);

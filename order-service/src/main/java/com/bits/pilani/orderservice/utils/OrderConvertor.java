@@ -4,13 +4,10 @@ import com.bits.pilani.orderservice.dto.CompletedOrderResponse;
 import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.dto.OrderResponse;
 import com.bits.pilani.orderservice.entity.Order;
-import com.bits.pilani.orderservice.enums.OrderStatus;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class OrderConvertor {
     
-    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static Order toOrder(OrderRequest orderRequest) throws JsonProcessingException
     {
