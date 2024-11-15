@@ -126,7 +126,7 @@ public class UserService {
 
 		if(mayBeRole.get().equals(Role.CUSTOMER)) {
 			userTo.setVehicleTypeId(null);
-			if(!Objects.nonNull(userTo.getAddress())) {
+			if(Objects.isNull(userTo.getAddress())) {
 				throw new CustomException(HttpStatus.BAD_REQUEST, "Address is missing. Please provide address.");
 			}
 		} else if(mayBeRole.get().equals(Role.DELIVERY_PERSONNEL)) {
