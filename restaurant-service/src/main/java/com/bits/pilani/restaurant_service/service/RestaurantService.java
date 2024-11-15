@@ -103,7 +103,7 @@ public class RestaurantService {
 	
 	private Set<String> menuFiltersAllowedInRestaurantSearch = Set.of("pure-veg", "cuisine");
 			
-	private Map<String, String> getMenuFilterForRestaurantSearch(Map<String, String> filter) {
+	public Map<String, String> getMenuFilterForRestaurantSearch(Map<String, String> filter) {
 
 		Map<String, String> menuFilter = new HashMap<>();
 		
