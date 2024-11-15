@@ -16,7 +16,7 @@ CREATE TYPE public.order_status AS ENUM (
 -- Create Order table
 CREATE TABLE public."order" (
     order_id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
     restaurant_id BIGINT NOT NULL,
     items TEXT NOT NULL,
     total_amt FLOAT NOT NULL,
@@ -29,19 +29,20 @@ CREATE TABLE public."order" (
     end_time TIMESTAMP,
     expected_time TIMESTAMP NOT NULL,
     address TEXT NOT NULL,
-    kilometers INT NOT NULL
+    kilometers INT NOT NULL,
+    delivery_personnel_id INT
 );
 
 -- Create OrderDetails table
 CREATE TABLE public.orderdetails (
     order_details_id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    restaurant_id BIGINT NOT NULL,
-    item_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    restaurant_id INT NOT NULL,
+    item_id INT NOT NULL,
     quantity INT NOT NULL,
     order_month INT,
     order_year INT,
-    order_id BIGINT NOT NULL,
+    order_id INT NOT NULL,
     CONSTRAINT fk_order
         FOREIGN KEY (order_id) 
         REFERENCES public."order" (order_id) 

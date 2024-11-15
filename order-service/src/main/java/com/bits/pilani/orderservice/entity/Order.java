@@ -40,13 +40,13 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="order_id")
-    private Long orderId;
+    private Integer orderId;
 
     @Column(nullable = false, name="user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(nullable = false, name="restaurant_id")
-    private Long restaurantId;
+    private Integer restaurantId;
 
     @Column(nullable = false)
     private String items;
@@ -89,7 +89,9 @@ public class Order {
     private String address;
 
     @Column(nullable = false)
-    private int kilometers;
+    private Integer kilometers;
+
+    private Integer deliveryPersonnelId;
 
     public List<MenuItem> getItems() {
         // Deserialize the JSON string back into a list of MenuItem

@@ -1,5 +1,6 @@
 package com.bits.pilani.orderservice.service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,10 +42,16 @@ public class OrderService {
         }
     }
 
-    public boolean validate(OrderRequest orderRequest)
-    {
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final SecureRandom RANDOM = new SecureRandom();
 
-        return ongoingOrderExists(orderRequest);       
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = RANDOM.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 
     public boolean validateStatus(OrderStatus previousStatus, OrderStatus newStatus){
@@ -68,13 +75,13 @@ public class OrderService {
         
     }
 
-    private boolean ongoingOrderExists(OrderRequest orderRequest)
+    public boolean ongoingOrderExists(OrderRequest orderRequest)
     {
         List<Order> orders = orderRepo.findByUserIdAndRestaurantId(orderRequest.getUserId(), orderRequest.getRestaurantId());
 
         if(orders.isEmpty())
         {
-            return true;
+            return false;
         }
 
         for (Order order : orders) {
@@ -82,10 +89,20 @@ public class OrderService {
             || !order.getOrderStatus().equals(OrderStatus.REJECTED)
             || !order.getOrderStatus().equals(OrderStatus.CANCELLED))
             {
-                return false;
+                return true;
             }
         }         
 
-        return true;
+        return false;
+    }
+
+    public String getDiscountCode(LocalDateTime endTime, LocalDateTime expectedTime)
+    {
+        if(endTime.isAfter(expectedTime))
+        {
+            return generateRandomString(6);
+        }
+        
+        return null;
     }
 }

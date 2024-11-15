@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.bits.pilani.to.ErrorResponseTO;
+import com.bits.pilani.to.ResponseTO;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		errorResponse.setMessage(exception.getMessage());
 		return ResponseEntity.internalServerError().body(errorResponse);
 	}
+
+	@ExceptionHandler(CustomException.class)
+    public ResponseEntity<ResponseTO> handleCustomException(CustomException customException) {
+        return CustomException.handleException(customException);
+    }
 	
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,

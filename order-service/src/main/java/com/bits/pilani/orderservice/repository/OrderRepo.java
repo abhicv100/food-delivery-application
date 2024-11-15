@@ -15,6 +15,6 @@ public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationE
 
     Order findByOrderId(int orderId);
 
-    List<Order> findByUserIdAndRestaurantId(Long userId, Long restaurantId);
+    List<Order> findByUserIdAndRestaurantId(Integer userId, Integer restaurantId);
     
 }

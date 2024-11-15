@@ -21,19 +21,19 @@ public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="order_details_id")
-    private Long orderDetailsId;
+    private Integer orderDetailsId;
 
     @Column(nullable = false, name="user_id")
-    private Long userId;
+    private Integer userId;
 
     @Column(nullable = false, name="restaurant_id")
-    private Long restaurantId;
+    private Integer restaurantId;
 
     @Column(nullable = false, name="item_id")
-    private Long itemId;
+    private Integer itemId;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(name="order_month")
     private Integer orderMonth;

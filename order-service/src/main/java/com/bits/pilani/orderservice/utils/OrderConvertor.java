@@ -1,5 +1,6 @@
 package com.bits.pilani.orderservice.utils;
 
+import com.bits.pilani.orderservice.dto.CompletedOrderResponse;
 import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.dto.OrderResponse;
 import com.bits.pilani.orderservice.entity.Order;
@@ -22,8 +23,8 @@ public class OrderConvertor {
         order.setTotalAmt(orderRequest.getTotalAmt());
         order.setAddress(orderRequest.getAddress());
         order.setKilometers(orderRequest.getKilometers());
-
-        order.setOrderStatus(OrderStatus.PLACED);
+        order.setOrderStatus(orderRequest.getOrderStatus());
+        order.setDeliveryPersonnelId(orderRequest.getDeliveryPersonnelId());
 
         return order;
     }
@@ -47,6 +48,27 @@ public class OrderConvertor {
         orderResponse.setExpectedTime(order.getExpectedTime());
         orderResponse.setAddress(order.getAddress());
         orderResponse.setKilometers(order.getKilometers());
+        orderResponse.setDeliveryPersonnelId(order.getDeliveryPersonnelId());
+
+        return orderResponse;
+    }
+
+    public static CompletedOrderResponse toCompletedOrderResponse(Order order, String discountCode)
+    {
+        CompletedOrderResponse orderResponse = new CompletedOrderResponse();
+
+        orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setUserId(order.getUserId());
+        orderResponse.setRestaurantId(order.getRestaurantId());
+        orderResponse.setTotalAmt(order.getTotalAmt());
+        orderResponse.setRestaurantDiscId(order.getRestaurantDiscId());
+        orderResponse.setRestaurantDiscAmt(order.getRestaurantDiscAmt());
+        orderResponse.setFinalAmt(order.getFinalAmt());
+        orderResponse.setOrderStatus(order.getOrderStatus());
+        orderResponse.setEndTime(order.getEndTime());
+        orderResponse.setExpectedTime(order.getExpectedTime());
+        orderResponse.setDeliveryPersonnelId(order.getDeliveryPersonnelId());
+        orderResponse.setDiscountCode(discountCode);
 
         return orderResponse;
     }

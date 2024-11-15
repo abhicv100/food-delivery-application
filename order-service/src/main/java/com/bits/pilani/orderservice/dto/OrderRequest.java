@@ -2,6 +2,8 @@ package com.bits.pilani.orderservice.dto;
 
 import java.util.List;
 
+import com.bits.pilani.orderservice.enums.OrderStatus;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +11,9 @@ import lombok.Setter;
 @Setter
 public class OrderRequest {
 
-    private Long userId;
+    private Integer userId;
 
-    private Long restaurantId;
+    private Integer restaurantId;
 
     private List<MenuItem> items;
 
@@ -23,6 +25,10 @@ public class OrderRequest {
 
     private String address;
     
-    private int kilometers;
+    private Integer kilometers;
+
+    private Integer deliveryPersonnelId;
+
+    private OrderStatus orderStatus;
 
 }
