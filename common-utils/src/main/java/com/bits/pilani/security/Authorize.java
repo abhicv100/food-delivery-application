@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Authorize {
 	
-	Role [] roles() default {Role.ADMIN, Role.CUSTOMER, Role.DELIVERY_PERSONAL, Role.RESTAURANT_OWNER};
+	Role [] roles() default {Role.ADMIN, Role.CUSTOMER, Role.DELIVERY_PERSONNEL, Role.RESTAURANT_OWNER};
 }

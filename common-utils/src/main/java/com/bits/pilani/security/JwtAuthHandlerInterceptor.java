@@ -69,9 +69,9 @@ public class JwtAuthHandlerInterceptor implements HandlerInterceptor {
 			throws Exception {
 		
 		if (handler instanceof HandlerMethod handlerMethod) {
-			Authorize authroize = handlerMethod.getMethodAnnotation(Authorize.class);
+			Authorize authorize = handlerMethod.getMethodAnnotation(Authorize.class);
 			
-			if (authroize == null) {
+			if (authorize == null) {
 				return true;				
 			}
 			
@@ -97,7 +97,7 @@ public class JwtAuthHandlerInterceptor implements HandlerInterceptor {
 					
 					Role role = Role.valueOf(roleName);
 										
-					var isRoleAuthorized = Arrays.asList(authroize.roles()).contains(role);
+					var isRoleAuthorized = Arrays.asList(authorize.roles()).contains(role);
 
 					if(!isRoleAuthorized) {
 						sendAccessDeniedError(response);
