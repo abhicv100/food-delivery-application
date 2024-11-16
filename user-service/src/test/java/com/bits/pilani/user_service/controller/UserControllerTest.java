@@ -1,12 +1,15 @@
 package com.bits.pilani.user_service.controller;
 
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +24,7 @@ import com.bits.pilani.security.Role;
 import com.bits.pilani.user_service.service.UserService;
 import com.bits.pilani.user_service.to.UserTO;
 import com.bits.pilani.user_service.to.VehicleTypeTO;
+import com.bits.pilani.util.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(controllers = { UserController.class })
@@ -38,9 +42,18 @@ public class UserControllerTest {
 	@Autowired
 	ObjectMapper mapper;
 
+	MockedStatic<TokenUtil> mockedTokenUtil;
+
 	@BeforeEach
-	void before() throws Exception {
+	void before() throws Exception {		
+		mockedTokenUtil = mockStatic(TokenUtil.class);
+		mockedTokenUtil.when(() -> TokenUtil.validateUser(Mockito.anyString(), Mockito.anyInt())).thenReturn(true);		
 		when(jwtInterceptor.preHandle(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
+	}
+	
+	@AfterEach
+	void after() {
+		mockedTokenUtil.close();
 	}
 
 	@Order(1)
@@ -55,7 +68,7 @@ public class UserControllerTest {
 
 		when(userService.getUser(Mockito.anyInt())).thenReturn(userTo);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/user/1")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/user/1").header("Authorization", "token")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Order(2)
@@ -92,7 +105,7 @@ public class UserControllerTest {
 		when(userService.updateUser(Mockito.any(UserTO.class))).thenReturn(userTo);
 
 		mockMvc.perform(
-				MockMvcRequestBuilders.put("/user/1").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.put("/user/1").header("Authorization", "token").contentType(MediaType.APPLICATION_JSON).content(requestBody))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
@@ -100,7 +113,7 @@ public class UserControllerTest {
 	@Test
 	void testDeleteUser() throws Exception {		
 		mockMvc.perform(
-				MockMvcRequestBuilders.delete("/user/1"))
+				MockMvcRequestBuilders.delete("/user/1").header("Authorization", "token"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
