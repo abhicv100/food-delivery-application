@@ -27,19 +27,19 @@ public interface OrderDetailsRepo extends JpaRepository<OrderDetails, Long>, Jpa
 
     // Most ordered items based only on cuisineId
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.cuisineId = :cuisineId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByCuisineId(@Param("cuisineId") int cuisineId);
+    List<Object[]> findMostOrderedItemsByCuisineId(int cuisineId);
 
     // Most ordered items based only on restaurantId
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.restaurantId = :restaurantId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByRestaurantId(@Param("restaurantId") int restaurantId);
+    List<Object[]> findMostOrderedItemsByRestaurantId(int restaurantId);
 
     // Most ordered items based on restaurantId and cuisineId
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.restaurantId = :restaurantId AND o.cuisineId = :cuisineId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByRestaurantIdAndCuisineId(@Param("restaurantId") int restaurantId, @Param("cuisineId") int cuisineId);
+    List<Object[]> findMostOrderedItemsByRestaurantIdAndCuisineId(int restaurantId, int cuisineId);
 
     // Most ordered items based on restaurantId and categoryId
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.restaurantId = :restaurantId AND o.categoryId = :categoryId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByRestaurantIdAndCategoryId(@Param("restaurantId") int restaurantId, @Param("categoryId") int categoryId);
+    List<Object[]> findMostOrderedItemsByRestaurantIdAndCategoryId(int restaurantId, int categoryId);
 
     // Top 5 restaurants based on the number of orders
     @Query("SELECT o.restaurantId, COUNT(o.restaurantId) AS count FROM OrderDetails o GROUP BY o.restaurantId ORDER BY count DESC")
@@ -50,20 +50,20 @@ public interface OrderDetailsRepo extends JpaRepository<OrderDetails, Long>, Jpa
        "WHERE o.cuisineId = :cuisineId " +
        "GROUP BY o.restaurantId " +
        "ORDER BY orderCount DESC")
-    List<Object[]> findTopRestaurantsByCuisineId(@Param("cuisineId") int cuisineId);
+    List<Object[]> findTopRestaurantsByCuisineId(int cuisineId);
 
     // All queries above with userId as an additional parameter
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.userId = :userId AND o.cuisineId = :cuisineId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByUserAndCuisineId(@Param("userId") int userId, @Param("cuisineId") int cuisineId);
+    List<Object[]> findMostOrderedItemsByUserAndCuisineId(int userId, int cuisineId);
 
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.userId = :userId AND o.restaurantId = :restaurantId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByUserAndRestaurantId(@Param("userId") int userId, @Param("restaurantId") int restaurantId);
+    List<Object[]> findMostOrderedItemsByUserAndRestaurantId(int userId, int restaurantId);
 
     @Query("SELECT o.itemId, COUNT(o.itemId) AS count FROM OrderDetails o WHERE o.userId = :userId AND o.restaurantId = :restaurantId AND o.cuisineId = :cuisineId GROUP BY o.itemId ORDER BY count DESC")
-    List<Object[]> findMostOrderedItemsByUserAndRestaurantIdAndCuisineId(@Param("userId") int userId, @Param("restaurantId") int restaurantId, @Param("cuisineId") int cuisineId);
+    List<Object[]> findMostOrderedItemsByUserAndRestaurantIdAndCuisineId(int userId, int restaurantId, int cuisineId);
 
     @Query("SELECT o.restaurantId, COUNT(o.restaurantId) AS count FROM OrderDetails o WHERE o.userId = :userId GROUP BY o.restaurantId ORDER BY count DESC")
-    List<Object[]> findTop5RestaurantsByOrdersAndUserId(@Param("userId") int userId);
+    List<Object[]> findTop5RestaurantsByOrdersAndUserId(int userId);
 
     @Query("SELECT o.restaurantId, COUNT(o.restaurantId) AS orderCount " +
        "FROM OrderDetails o " +
@@ -71,5 +71,5 @@ public interface OrderDetailsRepo extends JpaRepository<OrderDetails, Long>, Jpa
        "AND o.cuisineId = :cuisineId " +
        "GROUP BY o.restaurantId " +
        "ORDER BY orderCount DESC")
-    List<Object[]> findTopRestaurantsByUserIdAndCuisineId(@Param("userId") int userId, @Param("cuisineId") int cuisineId);
+    List<Object[]> findTopRestaurantsByUserIdAndCuisineId(int userId, int cuisineId);
 }
