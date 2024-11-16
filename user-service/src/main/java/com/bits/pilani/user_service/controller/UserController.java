@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 import com.bits.pilani.user_service.service.UserService;
 import com.bits.pilani.user_service.to.UserTO;
+import com.bits.pilani.util.TokenUtil;
 
 @RestController
 @ResponseBody
@@ -32,8 +34,9 @@ public class UserController {
 	
 	@Authorize
 	@GetMapping("/{userId}")
-	public ResponseEntity<ResponseTO> getUser(@PathVariable int userId) {
+	public ResponseEntity<ResponseTO> getUser(@PathVariable int userId, @RequestHeader("Authorization") String token) {
 		try {
+			TokenUtil.validateUser(token, userId);
 			userService.checkIfUserIdExist(userId);
 			var user = userService.getUser(userId);
 			return SuccessResponseTO.create(user);
@@ -56,8 +59,9 @@ public class UserController {
 
 	@Authorize
 	@PutMapping("/{userId}")
-	public ResponseEntity<ResponseTO> updateUser(@RequestBody UserTO userTO, @PathVariable int userId) {
+	public ResponseEntity<ResponseTO> updateUser(@RequestBody UserTO userTO, @PathVariable int userId, @RequestHeader("Authorization") String token) {
 		try {
+			TokenUtil.validateUser(token, userId);
 			userService.checkIfUserIdExist(userId);
 			userService.validateUserTO(userTO);
 			userTO.setId(userId);
@@ -70,8 +74,9 @@ public class UserController {
 
 	@Authorize
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<ResponseTO> deleteUser(@PathVariable int userId) {
+	public ResponseEntity<ResponseTO> deleteUser(@PathVariable int userId, @RequestHeader("Authorization") String token) {
 		try {
+			TokenUtil.validateUser(token, userId);
 			userService.checkIfUserIdExist(userId);
 			userService.deleteUser(userId);			
 			return SuccessResponseTO.create(userId);
