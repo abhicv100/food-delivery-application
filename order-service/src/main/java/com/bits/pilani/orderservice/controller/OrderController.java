@@ -30,6 +30,8 @@ import com.bits.pilani.to.ResponseTO;
 import com.bits.pilani.to.SuccessResponseTO;
 import com.bits.pilani.util.TokenUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 public class OrderController {
 
@@ -39,6 +41,7 @@ public class OrderController {
     @Autowired
     OrderRepo orderRepo;
 
+    @Operation(summary = "Place a new order")
     @Authorize( roles= {Role.CUSTOMER})
     @PostMapping("/order")
     public ResponseEntity<ResponseTO> placeOrder(@RequestBody OrderRequest orderRequest,
@@ -49,6 +52,7 @@ public class OrderController {
         return SuccessResponseTO.create(orderService.placeOrder(orderRequest, userId), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get an order based on orderId")
     @Authorize( roles= {Role.CUSTOMER, Role.ADMIN, Role.DELIVERY_PERSONNEL})
     @GetMapping("/order/{orderId}")
     public ResponseEntity<ResponseTO> getOrder(@PathVariable int orderId,
@@ -66,6 +70,7 @@ public class OrderController {
         
     }
 
+    @Operation(summary = "Update orderStatus")
     @Authorize( roles= {Role.CUSTOMER, Role.RESTAURANT_OWNER, Role.ADMIN, Role.DELIVERY_PERSONNEL})
     @PatchMapping("order/{orderId}")
     public ResponseEntity<ResponseTO> updateOrder(@PathVariable int orderId, 
@@ -76,6 +81,7 @@ public class OrderController {
         return SuccessResponseTO.create(orderService.patchOrder(orderId, userId, orderRequest));
     }
 
+    @Operation(summary = "Get all orders")
     @Authorize(roles = {Role.CUSTOMER, Role.ADMIN, Role.RESTAURANT_OWNER, Role.DELIVERY_PERSONNEL})
     @GetMapping("/orders")
     public ResponseEntity<ResponseTO> getOrders(@RequestHeader("Authorization") String token,
@@ -83,10 +89,18 @@ public class OrderController {
                                                 ) throws Exception{
 
         int userId = TokenUtil.getUserIdFromToken(token);
+
+        Role role = TokenUtil.getRoleFromToken(token);
         List<Order> orders = new ArrayList<>();
         if (orderStatus != null) {
+            if(role.equals(Role.ADMIN)) {
+                orders = orderRepo.findAllByOrderStatus(OrderStatus.valueOf(orderStatus));
+            }
             orders = orderRepo.findByUserIdAndOrderStatus(userId, OrderStatus.valueOf(orderStatus.toUpperCase()));
         } else {
+            if(role.equals(Role.ADMIN)) {
+                orders = orderRepo.findAll();
+            }
             orders = orderRepo.findAllByUserId(userId);
         }
 
