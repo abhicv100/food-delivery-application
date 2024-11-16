@@ -75,9 +75,9 @@ public class OrderService {
         
     }
 
-    public boolean ongoingOrderExists(OrderRequest orderRequest)
+    public boolean ongoingOrderExists(OrderRequest orderRequest, int userId)
     {
-        List<Order> orders = orderRepo.findByUserIdAndRestaurantId(orderRequest.getUserId(), orderRequest.getRestaurantId());
+        List<Order> orders = orderRepo.findByUserIdAndRestaurantId(userId, orderRequest.getRestaurantId());
 
         if(orders.isEmpty())
         {

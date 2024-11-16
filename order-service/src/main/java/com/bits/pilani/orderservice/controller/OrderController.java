@@ -47,10 +47,13 @@ public class OrderController {
     public ResponseEntity<ResponseTO> placeOrder(@RequestBody OrderRequest orderRequest,
                                                     @RequestHeader("Authorization") String token) throws Exception 
     {
-        if(!orderService.ongoingOrderExists(orderRequest))
+        int userId = TokenUtil.getUserIdFromToken(token);
+
+        if(!orderService.ongoingOrderExists(orderRequest, userId))
         {
             orderRequest.setOrderStatus(OrderStatus.PLACED);
             Order order = OrderConvertor.toOrder(orderRequest);
+            order.setUserId(userId);
 
             LocalDateTime currentTime = LocalDateTime.now();
             order.setStartTime(currentTime);

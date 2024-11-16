@@ -11,8 +11,6 @@ import lombok.Setter;
 @Setter
 public class OrderRequest {
 
-    private Integer userId;
-
     private Integer restaurantId;
 
     private List<MenuItem> items;
