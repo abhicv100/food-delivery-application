@@ -32,6 +32,12 @@ public class OrderDetails {
     @Column(nullable = false, name="item_id")
     private Integer itemId;
 
+    @Column(nullable = false, name="category_id")
+    private Integer categoryId;
+
+    @Column(nullable = false, name="cuisine_id")
+    private Integer cuisineId;
+
     @Column(nullable = false)
     private Integer quantity;
 
