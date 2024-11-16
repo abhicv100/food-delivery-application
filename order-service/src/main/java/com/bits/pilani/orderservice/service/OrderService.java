@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.orderservice.dto.OrderRequest;
+import com.bits.pilani.orderservice.dto.OrderResponse;
+import com.bits.pilani.orderservice.dto.OrderResponseDTO;
 import com.bits.pilani.orderservice.entity.Order;
 import com.bits.pilani.orderservice.enums.OrderStatus;
 import com.bits.pilani.orderservice.repository.OrderRepo;
 import com.bits.pilani.orderservice.utils.OrderConvertor;
 import com.bits.pilani.to.SuccessResponseTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Service
 public class OrderService {
@@ -114,7 +115,7 @@ public class OrderService {
         return null;
     }
 
-    public Order placeOrder(OrderRequest orderRequest, int userId) throws Exception{
+    public OrderResponse placeOrder(OrderRequest orderRequest, int userId) throws Exception{
         if(!ongoingOrderExists(orderRequest, userId))
         {
             orderRequest.setOrderStatus(OrderStatus.PLACED);
@@ -132,10 +133,51 @@ public class OrderService {
             orderDetailsService.saveOrderDetails(savedOrder);
 
 
-            return savedOrder;
+            return OrderConvertor.toOrderResponse(savedOrder);
         }
         else{
             throw new CustomException(HttpStatus.CONFLICT, "There's an ongoing order from the same restaurant! Please place another order once this completes, or contact the Restaurant for more information.");
         }  
+    }
+
+    public OrderResponseDTO patchOrder(int orderId, int userId, OrderRequest orderRequest) throws CustomException{
+
+        Order order = orderRepo.findByOrderIdAndUserId(orderId, userId);
+
+        if(order == null){
+            throw new CustomException(HttpStatus.NOT_FOUND, "Order not found");
+        }
+
+        if(validateStatus(order.getOrderStatus(), orderRequest.getOrderStatus())){
+            if(orderRequest.getOrderStatus().equals(OrderStatus.OUT_FOR_DELIVERY)){
+                if(orderRequest.getDeliveryPersonnelId() != null && orderRequest.getDeliveryPersonnelId() != 0)
+                {
+                    order.setDeliveryPersonnelId(orderRequest.getDeliveryPersonnelId());   
+                }
+                else{
+                    throw new CustomException(HttpStatus.BAD_REQUEST, "Delivery personnel is not assigned!");
+                }
+            }
+
+            if(orderRequest.getOrderStatus().equals(OrderStatus.DELIVERED))
+            {
+                order.setEndTime(LocalDateTime.now());
+                order.setOrderStatus(orderRequest.getOrderStatus());
+                
+                Order savedOrder = orderRepo.save(order);
+                
+                
+                
+                return OrderConvertor.toCompletedOrderResponse(savedOrder, getDiscountCode(savedOrder.getEndTime(), savedOrder.getExpectedTime()));
+            }
+
+            order.setOrderStatus(orderRequest.getOrderStatus());
+            return OrderConvertor.toOrderResponse(orderRepo.save(order));
+        } else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Previous status is " 
+                                    + order.getOrderStatus() + " next status should be " 
+                                    + order.getOrderStatus().getNext());
+        }
+        
     }
 }

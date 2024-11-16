@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CompletedOrderResponse {
+public class CompletedOrderResponse implements OrderResponseDTO{
 
     private Integer orderId;
     private Integer userId;

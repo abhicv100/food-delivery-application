@@ -11,10 +11,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderResponse {
+public class OrderResponse implements OrderResponseDTO{
 
     private Integer orderId;
-    private Integer userId;
     private Integer restaurantId;
     private List<MenuItem> items;
     private Float totalAmt;

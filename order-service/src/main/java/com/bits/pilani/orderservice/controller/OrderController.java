@@ -76,43 +76,6 @@ public class OrderController {
                                 @RequestHeader("Authorization") String token) throws Exception{
 
         int userId = TokenUtil.getUserIdFromToken(token);
-        Order order = orderRepo.findByOrderIdAndUserId(orderId, userId);
-
-        if(order == null)
-        {
-            throw new CustomException(HttpStatus.NOT_FOUND, "Order not found");
-        }
-
-        if(orderService.validateStatus(order.getOrderStatus(), orderRequest.getOrderStatus()))
-        {
-            if(orderRequest.getOrderStatus().equals(OrderStatus.OUT_FOR_DELIVERY)){
-                if(orderRequest.getDeliveryPersonnelId() != null && orderRequest.getDeliveryPersonnelId() != 0)
-                {
-                    order.setDeliveryPersonnelId(orderRequest.getDeliveryPersonnelId());   
-                }
-                else{
-                    throw new CustomException(HttpStatus.BAD_REQUEST, "Delivery personnel is not assigned!");
-                }
-            }
-
-            if(orderRequest.getOrderStatus().equals(OrderStatus.DELIVERED))
-            {
-                order.setEndTime(LocalDateTime.now());
-                order.setOrderStatus(orderRequest.getOrderStatus());
-                
-                Order savedOrder = orderRepo.save(order);
-                
-                
-                
-                return SuccessResponseTO.create(OrderConvertor.toCompletedOrderResponse(savedOrder, orderService.getDiscountCode(savedOrder.getEndTime(), savedOrder.getExpectedTime())));
-            }
-
-            order.setOrderStatus(orderRequest.getOrderStatus());
-            return SuccessResponseTO.create(OrderConvertor.toOrderResponse(orderRepo.save(order)));
-        }
-
-        throw new CustomException(HttpStatus.BAD_REQUEST, "Previous status is " 
-                                    + order.getOrderStatus() + " next status should be " 
-                                    + order.getOrderStatus().getNext());
+        return SuccessResponseTO.create(orderService.patchOrder(orderId, userId, orderRequest));
     }
 }

@@ -30,7 +30,6 @@ public class OrderConvertor {
         OrderResponse orderResponse = new OrderResponse();
 
         orderResponse.setOrderId(order.getOrderId());
-        orderResponse.setUserId(order.getUserId());
         orderResponse.setRestaurantId(order.getRestaurantId());
         orderResponse.setItems(order.getItems()); 
         orderResponse.setTotalAmt(order.getTotalAmt());
