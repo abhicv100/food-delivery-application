@@ -1,8 +1,8 @@
 -- Create the public schema if it doesn't exist
-CREATE SCHEMA IF NOT EXISTS public;
+CREATE SCHEMA IF NOT EXISTS orderschema;
 
 -- Enum for OrderStatus
-CREATE TYPE public.order_status AS ENUM (
+CREATE TYPE orderschema.order_status AS ENUM (
     'PLACED',
     'ACCEPTED',
     'PREPARING',
@@ -13,8 +13,19 @@ CREATE TYPE public.order_status AS ENUM (
     'CANCELLED'
 );
 
+DROP SEQUENCE IF EXISTS orderschema.order_id_seq;
+
+CREATE SEQUENCE orderschema.order_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE orderschema.order_id_seq OWNER TO postgres;
+
 -- Create Order table
-CREATE TABLE public."order" (
+CREATE TABLE orderschema."order" (
     order_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     restaurant_id BIGINT NOT NULL,
@@ -34,7 +45,7 @@ CREATE TABLE public."order" (
 );
 
 
-INSERT INTO public."order" (user_id, restaurant_id, items, total_amt, restaurant_disc_id, restaurant_disc_amt, final_amt, order_status, start_time, modified_time, expected_time, address, kilometers, delivery_personnel_id)
+INSERT INTO orderschema."order" (user_id, restaurant_id, items, total_amt, restaurant_disc_id, restaurant_disc_amt, final_amt, order_status, start_time, modified_time, expected_time, address, kilometers, delivery_personnel_id)
 VALUES 
 (1, 1, '[{"id": 1, "name": "Margherita Pizza", "quantity": 3}, {"id": 2, "name": "Pasta Carbonara", "quantity": 7}, {"id": 3, "name": "Vegetable Spring Rolls", "quantity": 2}]', 35.99, 'DISC10', 3.60, 32.39, 'PLACED', '2024-03-05 12:30:00', '2024-03-05 12:45:00', '2024-03-05 13:15:00', 'Mumbai, Maharashtra, India', 5, null), 
 (5, 1, '[{"id": 4, "name": "Chicken Tikka Masala", "quantity": 5}, {"id": 5, "name": "Beef Burger", "quantity": 6}]', 42.50, 'DISC15', 6.38, 36.12, 'ACCEPTED', '2024-06-21 17:10:00', '2024-06-21 17:30:00', '2024-06-21 18:10:00', 'Delhi, India', 8, null),
@@ -48,8 +59,19 @@ VALUES
 (12, 7, '[{"id": 67, "name": "Mushroom Risotto", "quantity": 7}, {"id": 70, "name": "Baked Ziti", "quantity": 8}]', 39.80, 'DISC10', 3.98, 35.82, 'PREPARING', '2024-09-10 12:50:00', '2024-09-10 13:00:00', '2024-09-10 13:40:00', 'Ahmedabad, Gujarat, India', 7, null);
 
 
+DROP SEQUENCE IF EXISTS orderschema.orderdetails_id_seq;
+
+CREATE SEQUENCE orderschema.orderdetails_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE orderschema.orderdetails_id_seq OWNER TO postgres;
+
 -- Create OrderDetails table
-CREATE TABLE public.orderdetails (
+CREATE TABLE orderschema.orderdetails (
     order_details_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     restaurant_id INT NOT NULL,
@@ -60,11 +82,11 @@ CREATE TABLE public.orderdetails (
     order_id INT NOT NULL,
     CONSTRAINT fk_order
         FOREIGN KEY (order_id) 
-        REFERENCES public."order" (order_id) 
+        REFERENCES orderschema."order" (order_id) 
         ON DELETE CASCADE
 );
 
-INSERT INTO public.orderdetails (user_id, restaurant_id, item_id, quantity, order_month, order_year, order_id)
+INSERT INTO orderschema.orderdetails (user_id, restaurant_id, item_id, quantity, order_month, order_year, order_id)
 VALUES 
 (1, 1, 1, 3, 3, 2024, 1),
 (1, 1, 2, 7, 3, 2024, 1),

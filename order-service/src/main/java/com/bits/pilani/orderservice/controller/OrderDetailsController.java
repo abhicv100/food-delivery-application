@@ -7,4 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/order/details")
 public class OrderDetailsController {
 
+    
 }

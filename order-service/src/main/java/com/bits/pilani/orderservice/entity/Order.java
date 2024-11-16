@@ -29,7 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="order", schema="public")
+@Table(name="order", schema="orderschema")
 @EntityListeners({AuditingEntityListener.class})
 public class Order {
     

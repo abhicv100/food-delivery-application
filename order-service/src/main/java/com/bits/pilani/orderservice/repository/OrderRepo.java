@@ -7,14 +7,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.bits.pilani.orderservice.entity.Order;
+import com.bits.pilani.orderservice.enums.OrderStatus;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
 
-    List<Order> findByUserId(Long userId);
+    List<Order> findAllByUserId(int userId);
 
-    Order findByOrderIdAndUserId(int orderId, int userId);
+    Order findByUserIdAndOrderId(int orderId, int userId);
 
-    List<Order> findByUserIdAndRestaurantId(Integer userId, Integer restaurantId);
+    List<Order> findByUserIdAndRestaurantId(int userId, int restaurantId);
+
+    List<Order> findByUserIdAndOrderStatus(int userId, OrderStatus orderStatus);
     
 }
