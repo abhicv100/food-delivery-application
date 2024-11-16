@@ -13,6 +13,17 @@ CREATE TYPE public.order_status AS ENUM (
     'CANCELLED'
 );
 
+DROP SEQUENCE IF EXISTS public.order_id_seq;
+
+CREATE SEQUENCE public.order_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE public.order_id_seq OWNER TO postgres;
+
 -- Create Order table
 CREATE TABLE public."order" (
     order_id SERIAL PRIMARY KEY,
@@ -47,6 +58,17 @@ VALUES
 (7, 6, '[{"id": 54, "name": "Baklava", "quantity": 4}, {"id": 56, "name": "Caprese Salad", "quantity": 6}, {"id": 59, "name": "Gnocchi", "quantity": 1}]', 45.20, 'DISC15', 6.78, 38.42, 'ACCEPTED', '2024-05-29 18:20:00', '2024-05-29 18:30:00', '2024-05-29 19:10:00', 'Bangalore, Karnataka, India', 6, null),
 (12, 7, '[{"id": 67, "name": "Mushroom Risotto", "quantity": 7}, {"id": 70, "name": "Baked Ziti", "quantity": 8}]', 39.80, 'DISC10', 3.98, 35.82, 'PREPARING', '2024-09-10 12:50:00', '2024-09-10 13:00:00', '2024-09-10 13:40:00', 'Ahmedabad, Gujarat, India', 7, null);
 
+
+DROP SEQUENCE IF EXISTS public.orderdetails_id_seq;
+
+CREATE SEQUENCE public.orderdetails_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE public.orderdetails_id_seq OWNER TO postgres;
 
 -- Create OrderDetails table
 CREATE TABLE public.orderdetails (
