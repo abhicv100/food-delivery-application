@@ -93,15 +93,15 @@ public class OrderService {
         }
 
         for (Order order : orders) {
-            if(!order.getOrderStatus().equals(OrderStatus.DELIVERED)
-            || !order.getOrderStatus().equals(OrderStatus.REJECTED)
-            || !order.getOrderStatus().equals(OrderStatus.CANCELLED))
+            if(order.getOrderStatus().equals(OrderStatus.DELIVERED)
+            || order.getOrderStatus().equals(OrderStatus.REJECTED)
+            || order.getOrderStatus().equals(OrderStatus.CANCELLED))
             {
-                return true;
+                return false;
             }
         }         
 
-        return false;
+        return true;
     }
 
     public String getDiscountCode(LocalDateTime endTime, LocalDateTime expectedTime)
