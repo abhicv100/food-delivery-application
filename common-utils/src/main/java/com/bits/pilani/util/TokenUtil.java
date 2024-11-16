@@ -15,51 +15,52 @@ public class TokenUtil {
     public static boolean validateUser(String token, int userId) throws CustomException
     {
         int userFromToken = 0;
-        Role role = null;
 
-        if (token.startsWith("Bearer")) {
-            String tokenString = token.split(" ")[1];
+        userFromToken = getUserIdFromToken(token);
 
-            Claims claims = Jwts.parser().verifyWith(GlobalWebConfig.getSignInKey()).build().parseSignedClaims(tokenString).getPayload();
-
-            if(claims.containsKey("userId"))
-            {
-                userFromToken = (int) claims.get("userId");
-            }
-            
-            if(claims.containsKey("role"))
-            {
-                role = Role.valueOf((String) claims.get("role"));
-            }
-        }
-        else{
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "Bearer token expected");
-        }
-        
-        if(userFromToken == 0)
-        {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "No user found in the token!");
-        }
-
-        if(userFromToken == userId)
-        {
+        if(userFromToken == userId){
             return true;
-        }
-        else
-        {
-            if(role != null)
-            {
-                if(role.equals(Role.ADMIN))
-                {
-                    return true;
-                }
-            }
-            else{
-                throw new CustomException(HttpStatus.UNAUTHORIZED, "No role is assigned to this user");
+        } else {
+            Role role = getRoleFromToken(token);
+            if(role.equals(Role.ADMIN)){
+                return true;
             }
         }
 
         throw new CustomException(HttpStatus.UNAUTHORIZED, "Accessing other user's data is not permitted");
+    }
+
+    public static int getUserIdFromToken(String token) throws CustomException{
+        
+        Claims claims = getClaims(token);
+
+        if(claims.containsKey("userId")){
+            return (int) claims.get("userId");
+        } else {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "No user found in the token!");
+        } 
+    }
+
+    private static Claims getClaims(String token) throws CustomException{
+        if (token.startsWith("Bearer")) {
+            String tokenString = token.split(" ")[1];
+
+            Claims claims = Jwts.parser().verifyWith(GlobalWebConfig.getSignInKey()).build().parseSignedClaims(tokenString).getPayload();
+            return claims;
+        } else {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Bearer token expected");
+        }
+    }
+
+    public static Role getRoleFromToken(String token) throws CustomException{
+        Claims claims = getClaims(token);
+            
+        if(claims.containsKey("role")){
+            return Role.valueOf((String) claims.get("role"));
+        } else {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "No role is assigned to this user");
+        }
+
     }
 
 }

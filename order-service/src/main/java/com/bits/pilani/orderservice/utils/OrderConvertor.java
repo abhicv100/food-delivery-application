@@ -12,7 +12,6 @@ public class OrderConvertor {
     public static Order toOrder(OrderRequest orderRequest) throws JsonProcessingException
     {
         Order order = new Order();
-        order.setUserId(orderRequest.getUserId());
         order.setRestaurantId(orderRequest.getRestaurantId());
         order.setItems(orderRequest.getItems());
         order.setRestaurantDiscId(orderRequest.getRestaurantDiscId());
