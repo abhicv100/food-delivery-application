@@ -31,7 +31,7 @@ public class DeliveryServiceController {
 	@Autowired
 	DeliveryService deliveryService;
 
-	@Authorize(roles = { Role.DELIVERY_PERSONAL })
+	@Authorize(roles = { Role.DELIVERY_PERSONNEL })
 	@GetMapping("/{orderId}")
 	public ResponseEntity<ResponseTO> getDeliveryDetailsByOrderId(@PathVariable int orderId) throws CustomException {
 
@@ -43,21 +43,21 @@ public class DeliveryServiceController {
 		}
 	}
 
-	@Authorize(roles = { Role.DELIVERY_PERSONAL })
+	@Authorize(roles = { Role.DELIVERY_PERSONNEL })
 	@GetMapping
 	public ResponseEntity<ResponseTO> getAllDeliveryDetails() throws CustomException {
 		var user = deliveryService.getAllDeliveryDetails();
 		return SuccessResponseTO.create(user);
 	}
 
-	@Authorize(roles = { Role.DELIVERY_PERSONAL })
+	@Authorize(roles = { Role.DELIVERY_PERSONNEL })
 	@PostMapping
 	public ResponseEntity<ResponseTO> newDeliveryDetails(@RequestBody DeliveryTO deliveryTO) throws CustomException {
 		var user = deliveryService.newDeliveryDetails(deliveryTO);
 		return SuccessResponseTO.create(user);
 	}
 
-	@Authorize(roles = { Role.DELIVERY_PERSONAL })
+	@Authorize(roles = { Role.DELIVERY_PERSONNEL })
 	@PutMapping("/{orderId}")
 	public ResponseEntity<ResponseTO> updateDeliveryDetails(@PathVariable int orderId,
 			@RequestBody DeliveryTO deliveryTO) throws CustomException {
