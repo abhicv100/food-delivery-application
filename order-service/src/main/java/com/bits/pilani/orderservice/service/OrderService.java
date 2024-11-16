@@ -141,7 +141,7 @@ public class OrderService {
 
     public OrderResponseDTO patchOrder(int orderId, int userId, OrderRequest orderRequest) throws CustomException{
 
-        Order order = orderRepo.findByOrderIdAndUserId(orderId, userId);
+        Order order = orderRepo.findByUserIdAndOrderId(userId, orderId);
 
         if(order == null){
             throw new CustomException(HttpStatus.NOT_FOUND, "Order not found");

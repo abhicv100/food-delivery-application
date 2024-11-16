@@ -16,8 +16,7 @@ public class OrderDetailsService {
     @Autowired
     OrderDetailsRepo orderDetailsRepo;
 
-    public void saveOrderDetails(Order order)
-    {
+    public void saveOrderDetails(Order order){
         
         List<OrderDetails> orderDetailsList = order.getItems().stream().map(item -> {
             OrderDetails orderDetails = new OrderDetails();
@@ -38,5 +37,7 @@ public class OrderDetailsService {
         // Save all OrderDetails in batch
         orderDetailsRepo.saveAll(orderDetailsList);
     }
+
+    
 
 }

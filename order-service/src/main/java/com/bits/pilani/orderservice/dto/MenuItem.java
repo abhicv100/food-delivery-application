@@ -8,7 +8,10 @@ import lombok.Setter;
 @Setter
 @Embeddable
 public class MenuItem {
+    
     private Integer id;
+    
     private String name;
+    
     private Integer quantity;
 }
