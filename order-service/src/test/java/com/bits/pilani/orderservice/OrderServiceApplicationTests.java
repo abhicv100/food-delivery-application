@@ -1,4 +1,4 @@
-package com.bits.pilani.order_service;
+package com.bits.pilani.orderservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
