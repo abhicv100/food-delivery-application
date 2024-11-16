@@ -16,7 +16,6 @@ import com.bits.pilani.orderservice.entity.Order;
 import com.bits.pilani.orderservice.enums.OrderStatus;
 import com.bits.pilani.orderservice.repository.OrderRepo;
 import com.bits.pilani.orderservice.utils.OrderConvertor;
-import com.bits.pilani.to.SuccessResponseTO;
 
 @Service
 public class OrderService {

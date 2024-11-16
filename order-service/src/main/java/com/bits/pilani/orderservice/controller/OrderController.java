@@ -1,7 +1,5 @@
 package com.bits.pilani.orderservice.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +16,7 @@ import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.dto.OrderResponse;
 import com.bits.pilani.orderservice.entity.Order;
-import com.bits.pilani.orderservice.enums.OrderStatus;
 import com.bits.pilani.orderservice.repository.OrderRepo;
-import com.bits.pilani.orderservice.service.OrderDetailsService;
 import com.bits.pilani.orderservice.service.OrderService;
 import com.bits.pilani.orderservice.utils.OrderConvertor;
 import com.bits.pilani.security.Authorize;
@@ -35,9 +31,6 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    OrderDetailsService orderDetailsService;
 
     @Autowired
     OrderRepo orderRepo;
