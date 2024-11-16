@@ -115,7 +115,7 @@ public class OrderService {
     }
 
     public OrderResponse placeOrder(OrderRequest orderRequest, int userId) throws Exception{
-        if(!ongoingOrderExists(orderRequest, userId))
+        if(!orderRepo.ongoingOrderExistsByUserIdAndRestaurantId(userId, orderRequest.getRestaurantId()))
         {
             orderRequest.setOrderStatus(OrderStatus.PLACED);
             Order order = OrderConvertor.toOrder(orderRequest);
