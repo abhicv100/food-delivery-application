@@ -30,6 +30,8 @@ public class OrderDetailsService {
             // Set fields specific to the item
             orderDetails.setItemId(item.getId());
             orderDetails.setQuantity(item.getQuantity());
+            orderDetails.setCategoryId(item.getCategoryId());
+            orderDetails.setCuisineId(item.getCuisineId());
 
             return orderDetails;
         }).collect(Collectors.toList());

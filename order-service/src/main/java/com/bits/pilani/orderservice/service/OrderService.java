@@ -165,8 +165,6 @@ public class OrderService {
                 
                 Order savedOrder = orderRepo.save(order);
                 
-                
-                
                 return OrderConvertor.toCompletedOrderResponse(savedOrder, getDiscountCode(savedOrder.getEndTime(), savedOrder.getExpectedTime()));
             }
 

@@ -12,6 +12,10 @@ public class MenuItem {
     private Integer id;
     
     private String name;
+
+    private Integer categoryId;
+
+    private Integer cuisineId;
     
     private Integer quantity;
 }
