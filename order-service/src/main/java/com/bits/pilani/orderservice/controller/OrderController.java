@@ -78,8 +78,9 @@ public class OrderController {
     public ResponseEntity<ResponseTO> getOrder(@PathVariable int orderId,
                                                 @RequestHeader("Authorization") String token) throws CustomException{
 
-        Order order = orderRepo.findByOrderId(orderId);
-        if(order != null && TokenUtil.validateUser(token, order.getUserId())){
+        int userId = TokenUtil.getUserIdFromToken(token);
+        Order order = orderRepo.findByOrderIdAndUserId(orderId, userId);
+        if(order != null){
 
             OrderResponse orderResponse = OrderConvertor.toOrderResponse(order);
             return SuccessResponseTO.create(orderResponse);
@@ -92,10 +93,11 @@ public class OrderController {
     @Authorize( roles= {Role.CUSTOMER, Role.RESTAURANT_OWNER, Role.ADMIN, Role.DELIVERY_PERSONNEL})
     @PatchMapping("/{orderId}")
     public ResponseEntity<ResponseTO> updateOrder(@PathVariable int orderId, 
-                                @RequestBody OrderRequest orderRequest) throws Exception
-    {
-        
-        Order order = orderRepo.findByOrderId(orderId);
+                                @RequestBody OrderRequest orderRequest,
+                                @RequestHeader("Authorization") String token) throws Exception{
+
+        int userId = TokenUtil.getUserIdFromToken(token);
+        Order order = orderRepo.findByOrderIdAndUserId(orderId, userId);
 
         if(order == null)
         {
