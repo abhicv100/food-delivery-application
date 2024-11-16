@@ -5,7 +5,6 @@ CREATE TABLE public.delivery_details (
     delivered BOOLEAN DEFAULT FALSE,
     delivery_message VARCHAR(255) DEFAULT 'Not picked up',
     delivery_accepted BOOLEAN DEFAULT FALSE,
-    CONSTRAINT order_id_fk FOREIGN KEY (order_id) REFERENCES public.Order (order_id),
     CONSTRAINT delivery_person_id_fk FOREIGN KEY (delivery_person_id) REFERENCES public.user (id) 
 );
 
