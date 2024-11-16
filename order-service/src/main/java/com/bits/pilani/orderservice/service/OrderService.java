@@ -5,18 +5,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.bits.pilani.exception.CustomException;
 import com.bits.pilani.orderservice.dto.OrderRequest;
 import com.bits.pilani.orderservice.entity.Order;
 import com.bits.pilani.orderservice.enums.OrderStatus;
 import com.bits.pilani.orderservice.repository.OrderRepo;
+import com.bits.pilani.orderservice.utils.OrderConvertor;
+import com.bits.pilani.to.SuccessResponseTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Service
 public class OrderService {
 
     @Autowired
     OrderRepo orderRepo;
+
+    @Autowired
+    OrderDetailsService orderDetailsService;
 
     public LocalDateTime getEstimatedTime(int kms, LocalDateTime currentTime)
     {
@@ -104,5 +112,30 @@ public class OrderService {
         }
         
         return null;
+    }
+
+    public Order placeOrder(OrderRequest orderRequest, int userId) throws Exception{
+        if(!ongoingOrderExists(orderRequest, userId))
+        {
+            orderRequest.setOrderStatus(OrderStatus.PLACED);
+            Order order = OrderConvertor.toOrder(orderRequest);
+            order.setUserId(userId);
+
+            LocalDateTime currentTime = LocalDateTime.now();
+            order.setStartTime(currentTime);
+            
+            order.setExpectedTime(getEstimatedTime(orderRequest.getKilometers(), currentTime));
+
+            order.setFinalAmt(orderRequest.getTotalAmt() - orderRequest.getRestaurantDiscAmt());
+
+            Order savedOrder = orderRepo.save(order);
+            orderDetailsService.saveOrderDetails(savedOrder);
+
+
+            return savedOrder;
+        }
+        else{
+            throw new CustomException(HttpStatus.CONFLICT, "There's an ongoing order from the same restaurant! Please place another order once this completes, or contact the Restaurant for more information.");
+        }  
     }
 }

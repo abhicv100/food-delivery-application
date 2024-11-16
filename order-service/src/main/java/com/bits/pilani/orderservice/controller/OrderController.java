@@ -49,28 +49,7 @@ public class OrderController {
     {
         int userId = TokenUtil.getUserIdFromToken(token);
 
-        if(!orderService.ongoingOrderExists(orderRequest, userId))
-        {
-            orderRequest.setOrderStatus(OrderStatus.PLACED);
-            Order order = OrderConvertor.toOrder(orderRequest);
-            order.setUserId(userId);
-
-            LocalDateTime currentTime = LocalDateTime.now();
-            order.setStartTime(currentTime);
-            
-            order.setExpectedTime(orderService.getEstimatedTime(orderRequest.getKilometers(), currentTime));
-
-            order.setFinalAmt(orderRequest.getTotalAmt() - orderRequest.getRestaurantDiscAmt());
-
-            Order savedOrder = orderRepo.save(order);
-            orderDetailsService.saveOrderDetails(savedOrder);
-
-
-            return SuccessResponseTO.create(savedOrder, HttpStatus.CREATED);
-        }
-        else{
-            throw new CustomException(HttpStatus.CONFLICT, "There's an ongoing order from the same restaurant! Please place another order once this completes, or contact the Restaurant for more information.");
-        }    
+        return SuccessResponseTO.create(orderService.placeOrder(orderRequest, userId), HttpStatus.CREATED);
     }
 
     @Authorize( roles= {Role.CUSTOMER, Role.ADMIN, Role.DELIVERY_PERSONNEL})
