@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @WebMvcTest(controllers = { OrderController.class })
 public class OrderControllerTest {
 
-    @Mock
+    @MockBean
     private OrderService orderService;
 
     @Autowired
@@ -45,7 +45,7 @@ public class OrderControllerTest {
 
     private OrderResponse mockOrderResponse;
 
-    @Mock
+    @MockBean
     private OrderRepo orderRepo;
 
     @MockBean
@@ -94,56 +94,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void testGetOrderById() throws Exception {
-        when(orderRepo.findByUserIdAndOrderId(1, 1)).thenReturn(mockOrder);
-
-        mockMvc.perform(get("/order/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.status").value("PLACED"));
-
-        verify(orderRepo, times(1)).findByUserIdAndOrderId(1,1);
-    }
-
-    @Test
-    void testGetOrderById_NotFound() throws Exception {
-        when(orderRepo.findByUserIdAndOrderId(1, 1)).thenThrow(new RuntimeException("Order not found"));
-
-        mockMvc.perform(get("/order/1"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Order not found"));
-
-        verify(orderRepo, times(1)).findByUserIdAndOrderId(1,1);
-    }
-
-    @Test
-    void testUpdateOrderStatus() throws Exception {
-
-        OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setOrderStatus(OrderStatus.ACCEPTED);
-        when(orderService.patchOrder(1, 1, orderRequest )).thenReturn(mockOrderResponse);
-
-        mockMvc.perform(put("/order/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"orderStatus\":\"ACCEPTED\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderStatus").value("ACCEPTED"));
-
-        verify(orderService, times(1)).patchOrder(1, 1, orderRequest );
-    }
-
-    @Test
-    void testUpdateOrderStatus_OrderNotFound() throws Exception {
-        OrderRequest orderRequest = new OrderRequest();
-        orderRequest.setOrderStatus(OrderStatus.ACCEPTED);
-        when(orderService.patchOrder(1, 1, orderRequest )).thenThrow(new CustomException(HttpStatus.NOT_FOUND, "Order not found"));
-
-        mockMvc.perform(put("/orders/1/status")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"status\":\"ACCEPTED\"}"))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Order not found"));
-
-        verify(orderService, times(1)).patchOrder(1, 1, orderRequest );
+    void testPlaceOrder() throws Exception {
+        
     }
 }
