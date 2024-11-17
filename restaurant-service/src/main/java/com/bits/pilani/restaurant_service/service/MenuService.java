@@ -41,7 +41,6 @@ public class MenuService {
 	
     public MenuItemTO createMenu(MenuItemTO menuTO) throws CustomException {
     	try {
-    		menuTO.setId(null);
     		MenuItemEntity menuEntity = new MenuItemEntity();    		
     		BeanUtils.copyProperties(menuTO, menuEntity);
     		menuEntity = menuDao.save(menuEntity);
